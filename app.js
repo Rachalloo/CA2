@@ -117,8 +117,17 @@ app.post('/register', validateRegistration, (req, res) => {
 });
 
 //******** Rach grooming ejs ********//
-app.get('/grooming', (req, res) => {
-  res.render('pet-grooming');
+app.get('/grooming_R', (req, res) => {
+  res.render('grooming');
+});
+
+app.get('/appointment_grooming_R', (req, res) => {
+  res.render('appointment_grooming');
+});
+
+app.post('/appointment_grooming_R', (req, res) => {
+  console.log(req.body); // You can email or store this
+  res.send('Appointment submitted successfully!');
 });
 
 
