@@ -402,6 +402,7 @@ app.post('/medications/edit/:id', (req, res) => {
 //Syaleez part end
 
 //Jeslyn part start
+/******** PROGRAMME ********/
 // Define routes
 app.get('/', (req, res) => {
     const sql = 'SELECT * FROM programme';
@@ -414,11 +415,10 @@ app.get('/', (req, res) => {
         }
 
         // Render HTML page with data
-        res.render('index', { programme: results });
+        res.render('programmes', { programme: results });
     });
 });
 
-/******** PROGRAMME ********/
 // Retrive and display one programme by id 
 app.get('/programme/:id', (req, res) => {
     // Extract the programme ID from the request parameters
@@ -465,7 +465,7 @@ app.post('/addProg', upload.single('image'), (req, res) => {
             res.status(500)("Error adding programme");
         } else {
             //Send a success response
-            res.redirect('/');
+            res.redirect('/programmes');
         }
     });
 });
@@ -512,7 +512,7 @@ app.post('/editProg/:id', upload.single('image'), (req, res) => {
             res.status(500).send('Error adding programme');
         } else {
             // Send a success response
-            res.redirect('/');
+            res.redirect('/programmes');
         }
     });
 });
@@ -528,12 +528,28 @@ app.get('/deleteProg/:id', (req, res) => {
             res.status(500).send('Error deleting programme');
         } else {
             // Send a success response
-            res.redirect('/');
+            res.redirect('/programmes');
         }
     });
 });
 
 /******** PARTNERSHIP ********/
+
+// Define routes
+app.get('/', (req, res) => {
+    const sql = 'SELECT * FROM partnership';
+
+    // Fetch data from MySQL
+    connection.query(sql, (error, results) => {
+        if (error) {
+            console.error('Database query error:', error.message);
+            return res.status(500).send('Error Retrieving partnership');
+        }
+
+        // Render HTML page with data
+        res.render('partnership', { partnership: results });
+    });
+});
 
 // Retrieve and display one partnership by id 
 app.get('/partnership/:id', (req, res) => {
@@ -570,7 +586,7 @@ app.post('/addPartnership', upload.single('image'), (req, res) => {
             console.error("Error adding partnership:", error);
             res.status(500).send("Error adding partnership");
         } else {
-            res.redirect('/');
+            res.redirect('/partnership');
         }
     });
 });
@@ -612,7 +628,7 @@ app.post('/editPartnership/:id', upload.single('image'), (req, res) => {
             console.error("Error updating partnership:", error);
             res.status(500).send('Error updating partnership');
         } else {
-            res.redirect('/');
+            res.redirect('/partnership');
         }
     });
 });
@@ -627,11 +643,10 @@ app.get('/deletePartnership/:id', (req, res) => {
             console.error("Error deleting partnership:", error);
             res.status(500).send('Error deleting partnership');
         } else {
-            res.redirect('/');
+            res.redirect('/partnership');
         }
     });
 });
-
 //Jeslyn part end
 
 //Xinyue part start
