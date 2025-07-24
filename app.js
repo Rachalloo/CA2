@@ -171,7 +171,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-//define routes for pet hotel
+//doris part start
+//define routes
 app.get("/petDetails", (req, res) => {
     const sql = "SELECT * FROM pets";
     //fetch data from mysql
@@ -185,7 +186,7 @@ app.get("/petDetails", (req, res) => {
     });
 });
 
-//display pet's hotel info
+//display pet
 app.get("/pet/:id", (req, res) => {
     //extract the pet id from the request parameters
     const petId = req.params.id;
@@ -207,7 +208,7 @@ app.get("/pet/:id", (req, res) => {
     });
 });
 
-//add pet in hotel
+//add pet 
 app.get("/addPet", (req, res) => {
     res.render("addPet");
 });
@@ -234,7 +235,7 @@ app.post("/addPet", upload.single("image"), (req, res) => {
     });
 });
 
-//edit pet in hotel
+//edit pet
 app.get("/editPet/:id", (req, res) => {
     const petId = req.params.id;
     const sql = "SELECT * FROM pets WHERE petId = ?";
@@ -274,7 +275,7 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
     });
 });
 
-//delete pet in hotel
+//delete pet 
 app.get("/deletePet/:id", (req, res) => {
     const petId = req.params.id;
     const sql = "DELETE FROM pets WHERE petId = ?";
@@ -287,6 +288,7 @@ app.get("/deletePet/:id", (req, res) => {
         }
     });
 });
+//doris part end
 
 // Syaleez Part start
 // READ: List of all appointments
