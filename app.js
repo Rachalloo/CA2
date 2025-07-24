@@ -288,6 +288,117 @@ app.get("/deletePet/:id", (req, res) => {
     });
 });
 
+// Syaleez Part start
+// READ: List of all appointments
+app.get('/appointments', (req, res) => {
+    db.query('SELECT * FROM appointments', (err, results) => {
+        if (err) throw err;
+        res.render('appointments', { appointments: results, messages: req.flash('success') });
+    });
+});
+
+// CREATE: Form to Add appointment
+app.get('/appointments/add', (req, res) => {
+    res.render('add_appointment');
+});
+
+// CREATE: Form submission
+app.post('/appointments/add', (req, res) => {
+    const { pet_name, vet_name, date, time } = req.body;
+    const sql = 'INSERT INTO appointments (pet_name, vet_name, date, time) VALUES (?, ?, ?, ?)';
+    db.query(sql, [pet_name, vet_name, date, time], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment added!');
+        res.redirect('/appointments');
+    });
+});
+
+// UPDATE: Edit form
+app.get('/appointments/edit/:id', (req, res) => {
+    db.query('SELECT * FROM appointments WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) throw err;
+        res.render('edit_appointment', { appointment: results[0] });
+    });
+});
+
+// UPDATE: Edit form submission
+app.post('/appointments/edit/:id', (req, res) => {
+    const { pet_name, vet_name, date, time } = req.body;
+    const sql = 'UPDATE appointments SET pet_name = ?, vet_name = ?, date = ?, time = ? WHERE id = ?';
+    db.query(sql, [pet_name, vet_name, date, time, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment updated!');
+        res.redirect('/appointments');
+    });
+});
+
+// DELETE: Delete Appointment
+app.get('/appointments/delete/:id', (req, res) => {
+    db.query('DELETE FROM appointments WHERE id = ?', [req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment deleted!');
+        res.redirect('/appointments');
+    });
+});
+
+// ============================================
+// Licensed Medication Routes
+
+// READ: List of all medications
+app.get('/medications', (req, res) => {
+    db.query('SELECT * FROM medications', (err, results) => {
+        if (err) throw err;
+        res.render('medications', { medications: results, messages: req.flash('success') });
+    });
+});
+
+// CREATE: Form to add medication
+app.get('/medications/add', (req, res) => {
+    res.render('add_medication');
+});
+
+// CREATE: Form submission
+app.post('/medications/add', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'INSERT INTO medications (name, dosage, expiration_date) VALUES (?, ?, ?)';
+    db.query(sql, [name, dosage, expiration_date], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication added!');
+        res.redirect('/medications');
+    });
+});
+
+// UPDATE: Edit form
+app.get('/medications/edit/:id', (req, res) => {
+    db.query('SELECT * FROM medications WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) throw err;
+        res.render('edit_medication', { medication: results[0] });
+    });
+});
+
+// UPDATE: Edit form submission
+app.post('/medications/edit/:id', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
+    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication updated!');
+        res.redirect('/medications');
+    });
+});
+
+// DELETE: Delete medication
+app.post('/medications/edit/:id', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
+    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication updated!');
+        res.redirect('/medications');
+    });
+});
+//Syaleez part end
+
 // Starting the server
 app.listen(3000, () => {
     console.log('Server started on port 3000');
