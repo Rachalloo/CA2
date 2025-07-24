@@ -404,7 +404,7 @@ app.post('/medications/edit/:id', (req, res) => {
 //Jeslyn part start
 /******** PROGRAMME ********/
 // Define routes
-app.get('/', (req, res) => {
+app.get('/programme', (req, res) => {
     const sql = 'SELECT * FROM programme';
 
     // Fetch data from MySQL
@@ -462,7 +462,7 @@ app.post('/addProg', upload.single('image'), (req, res) => {
         if (error) {
             //Handle any error that occurs during the database operation
             console.error("Error adding programme:", error);
-            res.status(500)("Error adding programme");
+            res.status(500).send("Error adding programme");
         } else {
             //Send a success response
             res.redirect('/programme');
@@ -502,7 +502,7 @@ app.post('/editProg/:id', upload.single('image'), (req, res) => {
         image = req.file.filename; // set image to be new image filename
     }
 
-    const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ? WHERE programmeId = ?';
+    const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image? WHERE programmeId = ?';
 
     // Insert the new prog into the database
     connection.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error, results) => {
@@ -536,7 +536,7 @@ app.get('/deleteProg/:id', (req, res) => {
 /******** PARTNERSHIP ********/
 
 // Define routes
-app.get('/', (req, res) => {
+app.get('/partnership', (req, res) => {
     const sql = 'SELECT * FROM partnership';
 
     // Fetch data from MySQL
@@ -647,6 +647,7 @@ app.get('/deletePartnership/:id', (req, res) => {
         }
     });
 });
+
 //Jeslyn part end
 
 //Xinyue part start
