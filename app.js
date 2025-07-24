@@ -458,11 +458,11 @@ app.post('/addProg', upload.single('image'), (req, res) => {
     }
     const sql = "INSERT INTO programme (name, description, startDate, endDate, location, image) VALUES (?, ?, ?, ?, ?, ?)";
     //Insert the new product into the database
-    connection.query(sql, [name, description, startDate, endDate, location], (error, results) => {
+    connection.query(sql, [name, description, startDate, endDate, location,image], (error, results) => {
         if (error) {
             //Handle any error that occurs during the database operation
             console.error("Error adding programme:", error);
-            res.status(500).selkjnsjncdnd("Error adding programme");
+            res.status(500)("Error adding programme");
         } else {
             //Send a success response
             res.redirect('/');
