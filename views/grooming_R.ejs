@@ -1,101 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pet Grooming</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Pet Grooming</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-      data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Menu</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Book</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/grooming">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/appointment_grooming">Book</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- Hero Section with Image -->
-<div class="container mt-4 text-center">
-  <h1 class="display-4">Pet Council Grooming Centre</h1>
-  <img src="https://placekitten.com/800/300" class="img-fluid my-4 rounded" alt="Pet Grooming">
+<!-- Hero Section -->
+<div class="container text-center mt-4">
+  <img src="https://placekitten.com/800/300" alt="Grooming Pets" class="img-fluid rounded">
+  <h1 class="display-4 mt-3">Welcome to Pet Council Grooming Centre</h1>
 </div>
 
-<!-- Intro -->
+<!-- Introduction -->
 <div class="container my-5">
-  <h2>Welcome to Our Pet Grooming Services</h2>
-  <p>We offer professional grooming for your furry friends with love, care, and safety.</p>
+  <h2>Introduction</h2>
+  <p>At Pet Council, we believe every pet deserves to look and feel their best. Our team offers grooming services tailored for your furry friends in a stress-free and safe environment.</p>
 </div>
 
 <!-- Why Choose Us -->
 <div class="container my-5">
-  <h2>Why Choose Our Pet Grooming?</h2>
-  <ul>
-    <li>Experienced groomers</li>
-    <li>Pet-safe products</li>
-    <li>Comfortable environment</li>
-    <li>Affordable packages</li>
-  </ul>
+  <h2>Why Choose Our Pet Grooming Services?</h2>
+  <p>We use gentle techniques, premium products, and give your pets the care they deserve. Our groomers are passionate, professional, and experienced in handling all breeds.</p>
 </div>
 
-<!-- Services -->
+<!-- Services Provided -->
 <div class="container my-5">
-  <h2>Our Grooming Services</h2>
-  <p>We provide:</p>
-  <ul>
-    <li>Bath & Blow Dry</li>
-    <li>Haircut & Styling</li>
-    <li>Nail Clipping</li>
-    <li>Ear Cleaning</li>
-    <li>Tick & Flea Treatment</li>
-  </ul>
+  <h2>Grooming Services Provided</h2>
+  <p>Our offerings include full grooming, nail trimming, de-shedding, ear cleaning, styling, and more. We cater to the unique grooming needs of each pet based on breed and lifestyle.</p>
 </div>
 
-<!-- Menu with Prices -->
-<div class="container my-5">
+<!-- Grooming Menu -->
+<div class="container my-5 text-center">
   <h2>Pet Grooming Menu</h2>
-  <table class="table table-striped">
+  <img src="https://placekitten.com/600/200" alt="Grooming Menu" class="img-fluid rounded mb-3">
+  <table class="table table-bordered table-striped">
     <thead>
-      <tr>
-        <th>Service</th>
-        <th>Price</th>
-      </tr>
+      <tr><th>Service</th><th>Price</th></tr>
     </thead>
     <tbody>
-      <tr><td>Basic Bath</td><td>$20</td></tr>
-      <tr><td>Full Groom</td><td>$50</td></tr>
-      <tr><td>Deluxe Spa</td><td>$80</td></tr>
+      <tr><td>Basic Wash & Dry</td><td>$25</td></tr>
+      <tr><td>Full Groom (Small Dog)</td><td>$45</td></tr>
+      <tr><td>Full Groom (Large Dog)</td><td>$60</td></tr>
+      <tr><td>Tick & Flea Treatment</td><td>$35</td></tr>
     </tbody>
   </table>
 </div>
 
-<!-- Safety -->
+<!-- Safety Section -->
 <div class="container my-5">
-  <h2>Safety First</h2>
-  <p>Your pet's safety is our priority. We use only certified-safe tools and ensure a stress-free experience.</p>
+  <h2>Pet Safety</h2>
+  <p>Your pet's safety is our #1 priority. All tools are sanitized after each use, and we use only vet-approved, skin-safe grooming products.</p>
 </div>
 
 <!-- Book Appointment -->
 <div class="container my-5 text-center">
   <h2>Book Your Appointment Today!</h2>
-  <p>Call us at <strong>+65 1234 5678</strong> or <a href="#" class="btn btn-primary">Book Online</a></p>
+  <img src="https://placekitten.com/600/250" class="img-fluid rounded mb-3" alt="Book Grooming">
+  <p>Get your pet the grooming they deserve. Fast, friendly, and affordable service awaits you.</p>
+  <a href="/appointment_grooming" class="btn btn-primary">Go to Appointment Form</a>
 </div>
 
 <!-- Footer -->
-<footer class="bg-dark text-white text-center py-3 mt-4">
+<footer class="bg-dark text-white text-center py-3 mt-5">
   <p>&copy; 2025 Pet Council. All rights reserved.</p>
 </footer>
 
