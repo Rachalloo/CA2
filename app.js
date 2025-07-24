@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const multer = require("multer");
 
 //******** TODO: Insert code to import 'express-session' *********//
 const session = require('express-session');
@@ -7,6 +8,17 @@ const session = require('express-session');
 const flash = require('connect-flash');
 
 const app = express();
+
+//set up multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/images"); //directory to save uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+});
+const upload = multer({storage: storage});
 
 // Database connection
 const db = mysql.createConnection({
@@ -158,6 +170,234 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
+
+//define routes for pet hotel
+app.get("/petDetails", (req, res) => {
+    const sql = "SELECT * FROM pets";
+    //fetch data from mysql
+    connection.query(sql, (error, results) => {
+        if (error) {
+            console.error("Database query error:", error.message);
+            return res.status(500).send("Error retrieving pets.");
+        }
+    //render HTML page with data
+    res.render("index_d", {pet: results});
+    });
+});
+
+//display pet's hotel info
+app.get("/pet/:id", (req, res) => {
+    //extract the pet id from the request parameters
+    const petId = req.params.id;
+    const sql = "SELECT * FROM pets WHERE petId = ?";
+    //fetch data from mysql based on the pet id
+    connection.query(sql, [petId], (error, results) => {
+        if (error) {
+            console.error("Database query error:", error.message);
+            return res.status(500).send("Error retrieving pet by ID.");
+        }
+        //check if any pet with the given id was found
+        if (results.length > 0) {
+            //render html page with the pet data
+            res.render("pet", {pet: results[0]});
+        } else {
+            //if no pet with the given id was found, render a 404 page or handle it accordingly 
+            res.status(404).send("Pet not found.");
+        }
+    });
+});
+
+//add pet in hotel
+app.get("/addPet", (req, res) => {
+    res.render("addPet");
+});
+app.post("/addPet", upload.single("image"), (req, res) => {
+    //extract pet data from the request body 
+    const {petName, startDate, endDate} = req.body;
+    let image;
+    if (req.file) {
+        image = req.file.filename; //save only the filename
+    } else {
+        image = null;
+    }
+    const sql = "INSERT INTO pets (petName, startDate, endDate, image) VALUES (?, ?, ?, ?)";
+    //insert the new pet into the database
+    connection.query(sql, [petName, startDate, endDate, image], (error, results) => {
+        if (error) {
+            //handle any error that occurs during the database operation
+            console.error("Error adding pet:", error);
+            res.status(500).send("Error adding pet.");
+        } else {
+            //send a success response
+            res.redirect("/petDetails");
+        }
+    });
+});
+
+//edit pet in hotel
+app.get("/editPet/:id", (req, res) => {
+    const petId = req.params.id;
+    const sql = "SELECT * FROM pets WHERE petId = ?";
+    //fetch data from mysql based on the pet id
+    connection.query(sql, [petId], (error, results) => {
+        if (error) {
+            console.error("Database query error:", error.message);
+            return res.status(500).send("Error retrieving pet by ID.");
+        }
+        //check if any pet with the given id was found
+        if (results.length > 0) {
+            //render html page with the pet data 
+            res.render("editPet", {pet: results[0]});
+        } else {
+            //if no pet with the given id was found, render a 404 page or handle it accordingly 
+            res.status(404).send("Pet not found.");
+        }
+    });
+});
+app.post("/editPet/:id", upload.single("image"), (req, res) => {
+    const petId = req.params.id;
+    //extract pet data from the request body 
+    const {petName, startDate, endDate} = req.body;
+    let image = req.body.currentImage; //retrieve current image filename
+    if (req.file) { //if new image is uploaded
+        image = req.file.filename //set image to be new image filename
+    }
+    const sql = "UPDATE pets SET petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
+    //insert the new pet into the database
+    connection.query(sql, [petNameame, startDate, endDate, image, petId], (error, results) => {
+        if (error) {
+            console.error("Error updating pet:", error);
+            res.status(500).send("Error updating pet.");
+        } else {
+            res.redirect("/petDetails");
+        }
+    });
+});
+
+//delete pet in hotel
+app.get("/deletePet/:id", (req, res) => {
+    const petId = req.params.id;
+    const sql = "DELETE FROM pets WHERE petId = ?";
+    connection.query(sql, [petId], (error, results) => {
+        if (error) {
+            console.error("Error deleting pet:", error);
+            res.status(500).send("Error deleting pet.");
+        } else {
+            res.redirect("/petDetails");
+        }
+    });
+});
+
+// Syaleez Part start
+// READ: List of all appointments
+app.get('/appointments', (req, res) => {
+    db.query('SELECT * FROM appointments', (err, results) => {
+        if (err) throw err;
+        res.render('appointments', { appointments: results, messages: req.flash('success') });
+    });
+});
+
+// CREATE: Form to Add appointment
+app.get('/appointments/add', (req, res) => {
+    res.render('add_appointment');
+});
+
+// CREATE: Form submission
+app.post('/appointments/add', (req, res) => {
+    const { pet_name, vet_name, date, time } = req.body;
+    const sql = 'INSERT INTO appointments (pet_name, vet_name, date, time) VALUES (?, ?, ?, ?)';
+    db.query(sql, [pet_name, vet_name, date, time], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment added!');
+        res.redirect('/appointments');
+    });
+});
+
+// UPDATE: Edit form
+app.get('/appointments/edit/:id', (req, res) => {
+    db.query('SELECT * FROM appointments WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) throw err;
+        res.render('edit_appointment', { appointment: results[0] });
+    });
+});
+
+// UPDATE: Edit form submission
+app.post('/appointments/edit/:id', (req, res) => {
+    const { pet_name, vet_name, date, time } = req.body;
+    const sql = 'UPDATE appointments SET pet_name = ?, vet_name = ?, date = ?, time = ? WHERE id = ?';
+    db.query(sql, [pet_name, vet_name, date, time, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment updated!');
+        res.redirect('/appointments');
+    });
+});
+
+// DELETE: Delete Appointment
+app.get('/appointments/delete/:id', (req, res) => {
+    db.query('DELETE FROM appointments WHERE id = ?', [req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment deleted!');
+        res.redirect('/appointments');
+    });
+});
+
+// ============================================
+// Licensed Medication Routes
+
+// READ: List of all medications
+app.get('/medications', (req, res) => {
+    db.query('SELECT * FROM medications', (err, results) => {
+        if (err) throw err;
+        res.render('medications', { medications: results, messages: req.flash('success') });
+    });
+});
+
+// CREATE: Form to add medication
+app.get('/medications/add', (req, res) => {
+    res.render('add_medication');
+});
+
+// CREATE: Form submission
+app.post('/medications/add', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'INSERT INTO medications (name, dosage, expiration_date) VALUES (?, ?, ?)';
+    db.query(sql, [name, dosage, expiration_date], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication added!');
+        res.redirect('/medications');
+    });
+});
+
+// UPDATE: Edit form
+app.get('/medications/edit/:id', (req, res) => {
+    db.query('SELECT * FROM medications WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) throw err;
+        res.render('edit_medication', { medication: results[0] });
+    });
+});
+
+// UPDATE: Edit form submission
+app.post('/medications/edit/:id', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
+    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication updated!');
+        res.redirect('/medications');
+    });
+});
+
+// DELETE: Delete medication
+app.post('/medications/edit/:id', (req, res) => {
+    const { name, dosage, expiration_date } = req.body;
+    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
+    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Medication updated!');
+        res.redirect('/medications');
+    });
+});
+//Syaleez part end
 
 // Starting the server
 app.listen(3000, () => {
