@@ -751,6 +751,69 @@ app.post('/pet-products/delete/medication/:id', (req, res) => {
 });
 //Xinyue part end
 
+// En Hui's Part.
+app.get('/user/view-schedule', checkAuthenticated, (req, res) => {
+    connection.query(
+        'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
+        (error, results) => {
+            if (error) return res.sendStatus(500);
+            res.render('userSchedule', { requests: results });
+        }
+    );
+});
+
+app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+    const { new_start_date, new_end_date } = req.body;
+
+    connection.query(
+        'UPDATE appointments SET reschedule_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ?, AND user_id = ?',
+        [new_start_date, new_end_date, appointmentId, req.session.user.id],
+        (err) => {
+            if (err) return res.sendStatus(500);
+            res.redirect('/user/schedule');
+        }
+    );
+});
+
+app.get('/admin/view-schedule', checkAuthenticated, checkAdmin, (req, res) => {
+    connection.query(
+        'SELECT * FROM appointments',
+        (error, results) => {
+            if (error) return res.sendStatus(500);
+            res.render('adminSchedule', { requests: results });
+        }
+    );
+});
+
+app.post('/admin/review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+
+    connection.query(
+        'SELECT new_start_date, new_end_date FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
+        [appointmentId],
+        (error, results) => {
+            if (error) throw error
+            if (results.length === 0) return res.status(404).send('No reschedule request found.');
+
+            const { new_start_date, new_end_date } = results[0];
+
+            connection.query(
+                `UPDATE appointments SET reschedule_request = 0, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointmentId = ?`,
+                [new_start_date, new_end_date, appointmentId],
+                (err) => {
+                    if (err) {
+                        console.error("Error Rescheduling:", err);
+                        res.status(500).send('Error Rescheduling');
+                        res.redirect('/admin/view-schedule');
+                    }
+                }
+            );
+        }
+    );
+});
+// En Hui's Part End.
+
 // Starting the server
 app.listen(3000, () => {
     console.log('Server started on port 3000');
