@@ -116,6 +116,12 @@ app.post('/register', validateRegistration, (req, res) => {
     });
 });
 
+//******** Rach grooming ejs ********//
+app.get('/grooming', (req, res) => {
+  res.render('pet-grooming');
+});
+
+
 //******** TODO: Insert code for login routes to render login page below ********//
 app.get('/login', (req, res) => {
     res.render('login', { 
