@@ -415,7 +415,7 @@ app.get('/', (req, res) => {
         }
 
         // Render HTML page with data
-        res.render('programmes', { programme: results });
+        res.render('programme', { programme: results });
     });
 });
 
@@ -465,7 +465,7 @@ app.post('/addProg', upload.single('image'), (req, res) => {
             res.status(500)("Error adding programme");
         } else {
             //Send a success response
-            res.redirect('/programmes');
+            res.redirect('/programme');
         }
     });
 });
@@ -512,7 +512,7 @@ app.post('/editProg/:id', upload.single('image'), (req, res) => {
             res.status(500).send('Error adding programme');
         } else {
             // Send a success response
-            res.redirect('/programmes');
+            res.redirect('/programme');
         }
     });
 });
@@ -528,7 +528,7 @@ app.get('/deleteProg/:id', (req, res) => {
             res.status(500).send('Error deleting programme');
         } else {
             // Send a success response
-            res.redirect('/programmes');
+            res.redirect('/programme');
         }
     });
 });
