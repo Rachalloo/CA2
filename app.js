@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 //******** TODO: Insert code to import 'express-session' *********//
 const session = require('express-session');
 
-const flash = require('connect-flash');hgjf
+const flash = require('connect-flash');
 
 const app = express();
 
