@@ -471,7 +471,11 @@ app.post('/addProg', upload.single('image'), (req, res) => {
             res.status(500).send("Error adding programme");
         } else {
             //Send a success response
-            res.redirect('/programme');
+            if (req.session.user && req.session.user.role === 'admin') {
+                res.redirect('/programme');  // Admin goes to programme list
+            } else {
+                res.redirect('/');  // Normal user goes to homepage
+            } 
         }
     });
 });
@@ -518,7 +522,11 @@ app.post('/editProg/:id', upload.single('image'), (req, res) => {
             res.status(500).send('Error adding programme');
         } else {
             // Send a success response
-            res.redirect('/programme');
+             if (req.session.user && req.session.user.role === 'admin') {
+                res.redirect('/programme');  // Admin goes to programme list
+            } else {
+                res.redirect('/');  // Normal user goes to homepage
+            }
         }
     });
 });
@@ -592,7 +600,11 @@ app.post('/addPartnership', upload.single('image'), (req, res) => {
             console.error("Error adding partnership:", error);
             res.status(500).send("Error adding partnership");
         } else {
-            res.redirect('/partnership');
+             if (req.session.user && req.session.user.role === 'admin') {
+                res.redirect('/programme');  // Admin goes to partnership list
+            } else {
+                res.redirect('/');  // Normal user goes to homepage
+            }
         }
     });
 });
@@ -634,7 +646,11 @@ app.post('/editPartnership/:id', upload.single('image'), (req, res) => {
             console.error("Error updating partnership:", error);
             res.status(500).send('Error updating partnership');
         } else {
-            res.redirect('/partnership');
+             if (req.session.user && req.session.user.role === 'admin') {
+                res.redirect('/partnership');  // Admin goes to partnership list
+            } else {
+                res.redirect('/');  // Normal user goes to homepage
+            }
         }
     });
 });
