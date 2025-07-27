@@ -761,6 +761,7 @@ app.post('/pet-products/delete/medication/:id', (req, res) => {
 //Xinyue part end
 
 // En Hui's Part.
+//USER
 app.get('/user/view-schedule', checkAuthenticated, (req, res) => {
     connection.query(
         'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
@@ -773,10 +774,10 @@ app.get('/user/view-schedule', checkAuthenticated, (req, res) => {
 
 app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
-    const { new_start_date, new_end_date } = req.body;
+    const {new_start_date, new_end_date} = req.body;
 
     connection.query(
-        'UPDATE appointments SET reschedule_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ?, AND user_id = ?',
+        'UPDATE appointments SET reschedule_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ? AND user_id = ?',
         [new_start_date, new_end_date, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
@@ -785,6 +786,7 @@ app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res)
     );
 });
 
+//ADMIN 
 app.get('/admin/view-schedule', checkAuthenticated, checkAdmin, (req, res) => {
     connection.query(
         'SELECT * FROM appointments',
@@ -808,12 +810,13 @@ app.post('/admin/review-reschedule/:id', checkAuthenticated, checkAdmin, (req, r
             const { new_start_date, new_end_date } = results[0];
 
             connection.query(
-                `UPDATE appointments SET reschedule_request = 0, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointmentId = ?`,
+                `UPDATE appointments SET reschedule_request = 0, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointment_id = ?`,
                 [new_start_date, new_end_date, appointmentId],
                 (err) => {
                     if (err) {
                         console.error("Error Rescheduling:", err);
                         res.status(500).send('Error Rescheduling');
+                    } else {
                         res.redirect('/admin/view-schedule');
                     }
                 }
