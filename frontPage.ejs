@@ -45,7 +45,7 @@
                 <% } %>
             <% } else { %>
             <br>
-            Hi <% name %>! Welcome to Pet Council! <br>
+            Hi <%= user.name %> (<%= user.role %>)! Welcome to Pet Council! <br>
             Please <a href = "/login" >login</a> to continue...
             <% } %>
         </p>
