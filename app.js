@@ -2,7 +2,6 @@
 const express = require('express');
 const mysql = require('mysql2');
 const multer = require("multer");
-const bodyParser = require("body-parser");
 const session = require('express-session');
 const flash = require('connect-flash');
 
@@ -17,9 +16,9 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 
-// Database connection
+// MySQL database connection
 const db = mysql.createConnection({
     host: 'c237-all.mysql.database.azure.com',
     port: '3306',
@@ -33,7 +32,7 @@ db.connect((err) => {
     console.log('Connected to database');
 });
 
-// Middleware setup
+// Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use('/Pictures', express.static('Pictures'));
 
@@ -46,17 +45,17 @@ app.use(session({
 
 app.use(flash());
 
-// Set EJS
+// EJS
 app.set('view engine', 'ejs');
 
-// Sample products (can be moved to DB later)
+// Sample product list (replace with DB later if needed)
 const products = [
     { id: 1, name: "Pet Shampoo", price: 12 },
     { id: 2, name: "Nail Trimming", price: 8 },
     { id: 3, name: "Haircut & Styling", price: 20 }
 ];
 
-// Cart initializer
+// Middleware to initialize empty cart
 app.use((req, res, next) => {
     if (!req.session.cart) {
         req.session.cart = [];
@@ -64,7 +63,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Authentication middlewares
+// Auth check middleware
 const checkAuthenticated = (req, res, next) => {
     if (req.session.user) return next();
     req.flash('error', 'Please log in to view this resource');
@@ -83,16 +82,21 @@ app.get('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register', { messages: req.flash('error'), formData: req.flash('formData')[0] });
+    res.render('register', {
+        messages: req.flash('error'),
+        formData: req.flash('formData')[0]
+    });
 });
 
 const validateRegistration = (req, res, next) => {
     const { username, email, password, address, contact } = req.body;
+
     if (!username || !email || !password || !address || !contact) {
         return res.status(400).send('All fields are required.');
     }
+
     if (password.length < 6) {
-        req.flash('error', 'Password should be at least 6 or more characters long');
+        req.flash('error', 'Password should be at least 6 characters');
         req.flash('formData', req.body);
         return res.redirect('/register');
     }
@@ -110,11 +114,15 @@ app.post('/register', validateRegistration, (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', { messages: req.flash('success'), errors: req.flash('error') });
+    res.render('login', {
+        messages: req.flash('success'),
+        errors: req.flash('error')
+    });
 });
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
         req.flash('error', 'All fields are required.');
         return res.redirect('/login');
@@ -162,7 +170,7 @@ app.post('/appointment_grooming_R', (req, res) => {
     res.send('Appointment submitted successfully!');
 });
 
-// Shop routes
+// Shopping cart routes
 app.get('/shop', (req, res) => {
     res.render('shop', { products, user: req.session.user, messages: req.flash('success') });
 });
@@ -196,6 +204,7 @@ app.get('/cart', (req, res) => {
     for (let i = 0; i < cart.length; i++) {
         total += cart[i].price * cart[i].quantity;
     }
+
     res.render('cart', { cart, total, user: req.session.user, messages: req.flash('success') });
 });
 

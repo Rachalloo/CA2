@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Home</title>
 </head>
 <body>
   <h1>Welcome to Pet Grooming Website</h1>
 
   <% if (user) { %>
-    <p>Welcome back, <%= user.username %>!</p>
-    <a href="/dashboard">Go to Dashboard</a> | <a href="/logout">Logout</a>
+    <p>Hello, <%= user.username %>!</p>
+    <a href="/dashboard">Dashboard</a> | 
+    <a href="/logout">Logout</a>
   <% } else { %>
-    <a href="/register">Register</a> | <a href="/login">Login</a>
+    <a href="/register">Register</a> | 
+    <a href="/login">Login</a>
   <% } %>
 
   <br><br>
-  <a href="/shop">Go to Shop</a> | <a href="/cart">View Cart</a>
+  <a href="/shop">🛒 Go to Shop</a> | 
+  <a href="/cart">View Cart</a>
 </body>
 </html>
