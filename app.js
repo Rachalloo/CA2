@@ -160,7 +160,7 @@ app.post('/login', (req, res) => {
             // Successful login
             req.session.user = results[0]; // store user in session
             req.flash('success', 'Login successful!');
-            //******** TO DO: Update to redirect users to /dashboard route upon successful log in ********//
+            // Update to redirect users to /dashboard route upon successful log in
             res.redirect('/dashboard');
         } else {
             // Invalid credentials
