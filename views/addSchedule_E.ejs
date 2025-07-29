@@ -10,57 +10,34 @@
 </head>
 
 <body>
-  <!-- Navbar to be editted... -->
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">Pet Council</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/inventory">Inventory</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/addProduct">Add New Product</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <!-- add navbar here -->
 
   <!-- Main Content -->
   <div class="container mt-4">
-    <h2 class="text-center mb-4">Add New Item to Schedule</h2>
-    <form action="/addProduct" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 500px;">
+    <h2 class="text-center mb-4">Request for Re-schedule/ Deletion</h2>
+    <form action="/user/schedule/reschedule-request/<%= appointment.appointmentId %>" method="POST"
+      enctype="multipart/form-data" class="mx-auto" style="max-width: 500px;">
+
+      <h2>Item Name: <%= appointment.appointmentName %></h2>
 
       <div class="mb-3">
-        <label for="name" class="form-label">Item Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="startdate" class="form-label">Start Date</label>
+        <label for="startdate" class="form-label">New Start Date:</label>
         <input type="date" class="form-control" id="startdate" name="startdate" required>
       </div>
 
       <div class="mb-3">
-        <label for="enddate" class="form-label">End Date:</label>
+        <label for="enddate" class="form-label">New End Date:</label>
         <input type="date" class="form-control" id="enddate" name="enddate" required>
         <span id="dateError" class="text-danger small"></span>
       </div>
 
-      <div class="mb-4">
-        <label for="image" class="form-label">Image</label>
-        <input class="form-control" type="file" id="image" name="image" accept="image/*">
+      <div class="mb-3">
+        <input type="checkbox" id="DeleteReq" name="DeleteReq" value="1">
+        <label for="DeleteReq">Request Delete</label>
       </div>
 
       <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Add Schedule Item</button>
+        <button type="submit" class="btn btn-primary">Request for Resched</button>
       </div>
 
     </form>
