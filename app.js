@@ -280,7 +280,7 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
     }
     const sql = "UPDATE pets SET petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
     //insert the new pet into the database
-    connection.query(sql, [petNameame, startDate, endDate, image, petId], (error, results) => {
+    connection.query(sql, [petName, startDate, endDate, image, petId], (error, results) => {
         if (error) {
             console.error("Error updating pet:", error);
             res.status(500).send("Error updating pet.");
