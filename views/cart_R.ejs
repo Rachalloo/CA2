@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Cart</title>
+</head>
+<body>
+  <h1>Shopping Cart</h1>
+
+  <% if (messages.length > 0) { %>
+    <p style="color: green;"><%= messages[0] %></p>
+  <% } %>
+
+  <% if (cart.length === 0) { %>
+    <p>Your cart is empty.</p>
+  <% } else { %>
+    <table border="1" cellpadding="8">
+      <thead>
+        <tr>
+          <th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let i = 0; i < cart.length; i++) { %>
+          <tr>
+            <td><%= cart[i].name %></td>
+            <td>$<%= cart[i].price %></td>
+            <td><%= cart[i].quantity %></td>
+            <td>$<%= cart[i].price * cart[i].quantity %></td>
+            <td>
+              <form action="/remove-from-cart" method="POST">
+                <input type="hidden" name="productId" value="<%= cart[i].id %>">
+                <button type="submit">Remove</button>
+              </form>
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <h3>Total: $<%= total %></h3>
+  <% } %>
+
+  <a href="/shop">⬅ Back to Shop</a>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shop</title>
+</head>
+<body>
+  <h1>Pet Grooming Shop</h1>
+
+  <% if (messages.length > 0) { %>
+    <p style="color: green;"><%= messages[0] %></p>
+  <% } %>
+
+  <% for (let i = 0; i < products.length; i++) { %>
+    <div>
+      <h3><%= products[i].name %></h3>
+      <p>Price: $<%= products[i].price %></p>
+      <form action="/add-to-cart" method="POST">
+        <input type="hidden" name="productId" value="<%= products[i].id %>">
+        <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Cart</button>
+      </form>
+    </div>
+    <hr>
+  <% } %>
+
+  <a href="/cart">🛒 View Cart</a>
+</body>
+</html>
