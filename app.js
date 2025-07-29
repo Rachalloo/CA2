@@ -1,8 +1,9 @@
+// Rachel's Part Start
 const express = require('express');
 const mysql = require('mysql2');
 const multer = require("multer");
 
-//******** TODO: Insert code to import 'express-session' *********//
+// Insert code to import 'express-session' 
 const session = require('express-session');
 
 const flash = require('connect-flash');
@@ -39,7 +40,7 @@ db.connect((err) => {
 app.use(express.urlencoded({ extended: false }));
 app.use('/Pictures', express.static('Pictures'));
 
-//******** TODO: Insert code for Session Middleware below ********//
+// Insert code for Session Middleware below
 app.use(session({
     secret: 'secret',
     resave: false,
@@ -53,7 +54,7 @@ app.use(flash());
 // Setting up EJS
 app.set('view engine', 'ejs');
 
-//******** TODO: Create a Middleware to check if user is logged in. ********//
+// Create a Middleware to check if user is logged in.
 const checkAuthenticated = (req, res, next) => {
     if (req.session.user) {
         return next();
@@ -63,7 +64,7 @@ const checkAuthenticated = (req, res, next) => {
     }
 };
 
-//******** TODO: Create a Middleware to check if user is admin. ********//
+// Create a Middleware to check if user is admin.
 const checkAdmin = (req, res, next) => {
     if (req.session.user.role === 'admin') {
         return next();
@@ -83,7 +84,7 @@ app.get('/register', (req, res) => {
 });
 
 
-//******** TODO: Create a middleware function validateRegistration ********//
+// Create a middleware function validateRegistration
 const validateRegistration = (req, res, next) => {
     const { username, email, password, address, contact } = req.body;
 
@@ -100,9 +101,9 @@ const validateRegistration = (req, res, next) => {
 };
 
 
-//******** TODO: Integrate validateRegistration into the register route. ********//
+// Integrate validateRegistration into the register route.
 app.post('/register', validateRegistration, (req, res) => {
-    //******** TODO: Update register route to include role. ********//
+    // Update register route to include role. 
     const { username, email, password, address, contact, role} = req.body;
 
     const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
@@ -116,22 +117,22 @@ app.post('/register', validateRegistration, (req, res) => {
     });
 });
 
-//******** Rach grooming ejs ********//
+// grooming_R ejs part
 app.get('/grooming_R', (req, res) => {
-  res.render('grooming');
+  res.render('grooming_R');
 });
 
 app.get('/appointment_grooming_R', (req, res) => {
-  res.render('appointment_grooming');
+  res.render('appointment_grooming_R');
 });
 
 app.post('/appointment_grooming_R', (req, res) => {
-  console.log(req.body); // You can email or store this
+  console.log(req.body);
   res.send('Appointment submitted successfully!');
 });
 
 
-//******** TODO: Insert code for login routes to render login page below ********//
+// Insert code for login routes to render login page below
 app.get('/login', (req, res) => {
     res.render('login', { 
         messages: req.flash('success'), 
@@ -139,7 +140,7 @@ app.get('/login', (req, res) => {
     });
 });
 
-//******** TODO: Insert code for login routes for form submission below ********//
+// Insert code for login routes for form submission below
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
@@ -170,21 +171,22 @@ app.post('/login', (req, res) => {
 });
 
 
-//******** TODO: Insert code for dashboard route to render dashboard page for users. ********//
+// Insert code for dashboard route to render dashboard page for users.
 app.get('/dashboard', checkAuthenticated, (req, res) => {
     res.render('dashboard', { user: req.session.user });
 });
 
-//******** TODO: Insert code for admin route to render dashboard page for admin. ********//
+// Insert code for admin route to render dashboard page for admin.
 app.get('/admin', checkAuthenticated, checkAdmin, (req, res) => {
     res.render('admin', { user: req.session.user });
 });
 
-//******** TODO: Insert code for logout route ********//
+// Insert code for logout route
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
+// Rachel's part end
 
 //doris part start
 //define routes
