@@ -249,13 +249,13 @@ app.post('/checkout_R', checkAuthenticated, (req, res) => {
 app.get("/petDetails", (req, res) => {
     const sql = "SELECT * FROM pets";
     //fetch data from mysql
-    connection.query(sql, (error, results) => {
+    db.query(sql, (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
             return res.status(500).send("Error retrieving pets.");
         }
     //render HTML page with data
-    res.render("index_d", {pet: results});
+    res.render("index_d", {pets: results});
     });
 });
 
@@ -265,7 +265,7 @@ app.get("/pet/:id", (req, res) => {
     const petId = req.params.id;
     const sql = "SELECT * FROM pets WHERE petId = ?";
     //fetch data from mysql based on the pet id
-    connection.query(sql, [petId], (error, results) => {
+    db.query(sql, [petId], (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
             return res.status(500).send("Error retrieving pet by ID.");
@@ -273,7 +273,7 @@ app.get("/pet/:id", (req, res) => {
         //check if any pet with the given id was found
         if (results.length > 0) {
             //render html page with the pet data
-            res.render("pet_d", {pet: results[0]});
+            res.render("pet_d", {pets: results[0]});
         } else {
             //if no pet with the given id was found, render a 404 page or handle it accordingly 
             res.status(404).send("Pet not found.");
@@ -283,7 +283,7 @@ app.get("/pet/:id", (req, res) => {
 
 //add pet 
 app.get("/addPet", (req, res) => {
-    res.render("addPet");
+    res.render("addPet_d");
 });
 app.post("/addPet", upload.single("image"), (req, res) => {
     //extract pet data from the request body 
@@ -296,7 +296,7 @@ app.post("/addPet", upload.single("image"), (req, res) => {
     }
     const sql = "INSERT INTO pets (petName, startDate, endDate, image) VALUES (?, ?, ?, ?)";
     //insert the new pet into the database
-    connection.query(sql, [petName, startDate, endDate, image], (error, results) => {
+    db.query(sql, [petName, startDate, endDate, image], (error, results) => {
         if (error) {
             //handle any error that occurs during the database operation
             console.error("Error adding pet:", error);
@@ -313,7 +313,7 @@ app.get("/editPet/:id", (req, res) => {
     const petId = req.params.id;
     const sql = "SELECT * FROM pets WHERE petId = ?";
     //fetch data from mysql based on the pet id
-    connection.query(sql, [petId], (error, results) => {
+    db.query(sql, [petId], (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
             return res.status(500).send("Error retrieving pet by ID.");
@@ -321,7 +321,7 @@ app.get("/editPet/:id", (req, res) => {
         //check if any pet with the given id was found
         if (results.length > 0) {
             //render html page with the pet data 
-            res.render("editPet_d", {pet: results[0]});
+            res.render("editPet_d", {pets: results[0]});
         } else {
             //if no pet with the given id was found, render a 404 page or handle it accordingly 
             res.status(404).send("Pet not found.");
@@ -338,7 +338,7 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
     }
     const sql = "UPDATE pets SET petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
     //insert the new pet into the database
-    connection.query(sql, [petName, startDate, endDate, image, petId], (error, results) => {
+    db.query(sql, [petName, startDate, endDate, image, petId], (error, results) => {
         if (error) {
             console.error("Error updating pet:", error);
             res.status(500).send("Error updating pet.");
@@ -352,13 +352,28 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
 app.get("/deletePet/:id", (req, res) => {
     const petId = req.params.id;
     const sql = "DELETE FROM pets WHERE petId = ?";
-    connection.query(sql, [petId], (error, results) => {
+    db.query(sql, [petId], (error, results) => {
         if (error) {
             console.error("Error deleting pet:", error);
             res.status(500).send("Error deleting pet.");
         } else {
             res.redirect("/petDetails");
         }
+    });
+});
+
+//search function
+app.get("/search", (req, res) => {
+    const searchQuery = req.query.search || "";
+    const sql = searchQuery 
+        ? "SELECT * FROM pets WHERE petName LIKE ?"
+        : "SELECT * FROM pets";
+    
+    const params = searchQuery ? [`%${searchQuery}%`] : [];
+
+    db.query(sql, params, (err, results) => {
+        if (err) throw err;
+        res.render("index_d", { pets: results, query: searchQuery });
     });
 });
 //doris part end
