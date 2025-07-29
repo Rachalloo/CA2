@@ -215,7 +215,7 @@ app.get("/pet/:id", (req, res) => {
         //check if any pet with the given id was found
         if (results.length > 0) {
             //render html page with the pet data
-            res.render("pet", {pet: results[0]});
+            res.render("pet_d", {pet: results[0]});
         } else {
             //if no pet with the given id was found, render a 404 page or handle it accordingly 
             res.status(404).send("Pet not found.");
@@ -263,7 +263,7 @@ app.get("/editPet/:id", (req, res) => {
         //check if any pet with the given id was found
         if (results.length > 0) {
             //render html page with the pet data 
-            res.render("editPet", {pet: results[0]});
+            res.render("editPet_d", {pet: results[0]});
         } else {
             //if no pet with the given id was found, render a 404 page or handle it accordingly 
             res.status(404).send("Pet not found.");
