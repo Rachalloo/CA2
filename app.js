@@ -161,11 +161,11 @@ app.get('/grooming_R', (req, res) => {
     res.render('grooming_R');
 });
 
-app.get('/appointment_grooming_R', (req, res) => {
-    res.render('appointment_grooming_R');
+app.get('/appt_from_create_SRDE', (req, res) => {
+    res.render('appt_from_create_SRDE');
 });
 
-app.post('/appointment_grooming_R', (req, res) => {
+app.post('/appt_from_create_SRDE', (req, res) => {
     console.log(req.body);
     res.send('Appointment submitted successfully!');
 });
