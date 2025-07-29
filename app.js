@@ -214,6 +214,34 @@ app.post('/remove-from-cart', (req, res) => {
     req.flash('success', 'Item removed from cart.');
     res.redirect('/cart');
 });
+
+app.get('/checkout', checkAuthenticated, (req, res) => {
+  res.render('checkout', { messages: req.flash('error') });
+});
+
+// Route to handle checkout form submission
+app.post('/checkout_R', checkAuthenticated, (req, res) => {
+  const { full_name, address, contact, total_price } = req.body;
+  const userId = req.session.user.id;
+
+  if (!full_name || !address || !contact || !total_price) {
+    req.flash('error', 'All fields are required.');
+    return res.redirect('/checkout');
+  }
+
+  const sql = `INSERT INTO orders (user_id, full_name, address, contact, total_price)
+               VALUES (?, ?, ?, ?, ?)`;
+
+  db.query(sql, [userId, full_name, address, contact, total_price], (err, result) => {
+    if (err) throw err;
+
+    const orderId = result.insertId;
+    res.render('order_confirmation_R', {
+      orderId: orderId,
+      total_price: total_price
+    });
+  });
+});
 // Rachel's part end
 
 //doris part start
