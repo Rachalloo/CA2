@@ -37,7 +37,7 @@ db.connect((err) => {
 });
 
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static('Pictures'));
+app.use('/Pictures', express.static('Pictures'));
 
 //******** TODO: Insert code for Session Middleware below ********//
 app.use(session({
