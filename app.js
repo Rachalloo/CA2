@@ -793,7 +793,7 @@ app.post('/pet-products/delete/medication/:id', (req, res) => {
 
 // En Hui's Part.
 //USER
-app.get('/user/view-schedule', checkAuthenticated, (req, res) => {
+app.get('/user/schedule', checkAuthenticated, (req, res) => {
     connection.query(
         'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
         (error, results) => {
@@ -803,13 +803,56 @@ app.get('/user/view-schedule', checkAuthenticated, (req, res) => {
     );
 });
 
+app.post('/user/schedule/:id', checkAuthenticated, (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+
+    connection.query('SELECT * FROM request_appointments WHERE appointmentId = ?', [appointmentId], (error, results) => {
+        if (error) throw error;
+        if (results.length > 0) {
+            const appointment = results[0];
+            if (!req.session.appointment) req.session.appointment = [];
+
+            // Check if appointment is already in the appointment table
+            const existingItem = req.session.appointment.find(appointment => appointment.appointmentId === appointmentId);
+            if (existingItem) {
+                // Don't do anything
+            } else {
+                req.session.appointment.push({
+                    appointmentId: appointment.appointmentId,
+                    appointmentName: appointment.appointmentName,
+                    appointmentStartDate: appointment.appointmentStartDate,
+                    appointmentEndDate: appointment.appointmentEndDate,
+                });
+            }
+
+            res.redirect('/user/schedule');
+        } else {
+            res.status(404).send("Product not found");
+        }
+    });
+});
+
 app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
-    const {new_start_date, new_end_date} = req.body;
+    const { DeleteReq, startdate, enddate } = req.body;
 
     connection.query(
-        'UPDATE appointments SET reschedule_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ? AND user_id = ?',
-        [new_start_date, new_end_date, appointmentId, req.session.user.id],
+        'UPDATE appointments SET reschedule_request = 1, delete_request = ?, new_start_date = ?, new_end_date = ?, date_of_request = NOW() WHERE appointment_id = ? AND user_id = ?',
+        [DeleteReq, startdate, enddate, appointmentId, req.session.user.id],
+        (err) => {
+            if (err) return res.sendStatus(500);
+            res.redirect('/user/schedule');
+        }
+    );
+});
+
+app.post('/user/schedule/schedule-delete-request/:id', checkAuthenticated, (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+    const { ReschId, newStartDate, newEndDate } = req.body;
+
+    connection.query(
+        'UPDATE appointments SET reschedule_request = ?, delete_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ? AND user_id = ?',
+        [ReschId, newStartDate, newEndDate, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
             res.redirect('/user/schedule');
@@ -818,7 +861,7 @@ app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res)
 });
 
 //ADMIN 
-app.get('/admin/view-schedule', checkAuthenticated, checkAdmin, (req, res) => {
+app.get('/admin/schedule', checkAuthenticated, checkAdmin, (req, res) => {
     connection.query(
         'SELECT * FROM appointments',
         (error, results) => {
@@ -828,32 +871,47 @@ app.get('/admin/view-schedule', checkAuthenticated, checkAdmin, (req, res) => {
     );
 });
 
-app.post('/admin/review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
+app.post('/admin/schedule/review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const appointmentId = parseInt(req.params.id);
 
     connection.query(
-        'SELECT new_start_date, new_end_date FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
+        'SELECT new_start_date, new_end_date, delete_request FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
         [appointmentId],
         (error, results) => {
             if (error) throw error
             if (results.length === 0) return res.status(404).send('No reschedule request found.');
 
-            const { new_start_date, new_end_date } = results[0];
+            const { DeleteReq, newStartDate, newEndDate } = results[0];
 
             connection.query(
-                `UPDATE appointments SET reschedule_request = 0, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointment_id = ?`,
-                [new_start_date, new_end_date, appointmentId],
+                `UPDATE appointments SET reschedule_request = 0, delete_request = ?, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointment_id = ?`,
+                [DeleteReq, newStartDate, newEndDate, appointmentId],
                 (err) => {
                     if (err) {
                         console.error("Error Rescheduling:", err);
                         res.status(500).send('Error Rescheduling');
                     } else {
-                        res.redirect('/admin/view-schedule');
+                        res.redirect('/admin/schedule');
                     }
                 }
             );
         }
     );
+});
+
+app.get('/admin/schedule/deleteSchedule/:id', (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+
+    connection.query('DELETE FROM appointments WHERE appointment_id = ?', [appointmentId], (error, results) => {
+        if (error) {
+            // Handle any error that occurs during the database operation
+            console.error("Error deleting schedule:", error);
+            res.status(500).send('Error deleting schedule');
+        } else {
+            // Send a success response
+            res.redirect('/admin/schedule');
+        }
+    });
 });
 // En Hui's Part End.
 
