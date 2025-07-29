@@ -12,7 +12,7 @@ const app = express();
 //set up multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "public/images"); //directory to save uploaded files
+        cb(null, "Pictures"); //directory to save uploaded files
     },
     filename: (req, file, cb) => {
         cb(null, file.originalname);
@@ -549,7 +549,7 @@ app.get('/partnership', (req, res) => {
             return res.status(500).send('Error Retrieving partnership');
         }
 
-        res.render('partnership_j', { partnership: results });
+        res.render('index_j', { partnership: results });
     });
 });
 
