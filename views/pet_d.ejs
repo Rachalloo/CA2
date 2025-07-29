@@ -18,16 +18,16 @@
       <h2>Pet Details</h2>
     </div>
     <br>
-    <% if (pet) { %> <!--check if pet data exists-->
+    <% if (pets) { %> <!--check if pet data exists-->
       <div>
         <p><b>Pet Name:</b><br>
-          <%= pet.petName %>
+          <%= pets.petName %>
         </p>
-        <p><b>Pet Image:</b><br> <img src="<%= product.image %>" width="20%"></p>
+        <p><b>Pet Image:</b><br> <img src="<%= pets.image %>" width="20%"></p>
         <p><b>Start Date:</b><br>
-          <%= pet.startDate %>
+          <%= pets.startDate %>
         </p>
-        <p><b>End Date:</b><br> $<%= pet.endDate %>
+        <p><b>End Date:</b><br> <%= pets.endDate %>
         </p>
       </div>
       <% } else { %>
