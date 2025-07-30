@@ -14,45 +14,9 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-          <ul class="navbar-nav">
-            <% if (!user) {%>
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
-                </li> 
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
-                </li> 
-            <% } else { %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Logout">Logout</a>
-                </li> 
-            <% } %>
-          </ul>
-        </div>
+        <%- include ('header_E.ejs') %>
       </div>
     </nav>
-
-    <div class="container">
-        <p style="text-align: center;">
-            <% if (user) {%>
-              <% if (user.role === "admin") { %>
-                <br>
-                Back to <a href="/inventory">inventory!</a>
-              <% } else { %>
-                <br>
-                Continue <a href="/shopping">Shopping!</a>
-                <% } %>
-            <% } else { %>
-            <br>
-            Hi <%= user.name %> (<%= user.role %>)! Welcome to Pet Council! <br>
-            Please <a href = "/login" >login</a> to continue...
-            <% } %>
-        </p>
-    </div>
-    
-    <footer class="bg-dark text-white text-center py-3 mt-5">
-      <p>&copy; 2025 Pet Council. All rights reserved.</p>
-    </footer>
 </body>
+<%- include ('footer_R.ejs') %>
 </html>
