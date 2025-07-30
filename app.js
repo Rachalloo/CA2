@@ -764,7 +764,7 @@ app.get('/petFood/:id', (req, res) => {
 
 // Show form to add Pet Food
 app.get('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
-  res.render('addFood_x', { user: req.session.user });
+  res.render('addFood_x', { user: req.session.user, messages: [] });
 });
 
 // Handle adding Pet Food
