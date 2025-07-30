@@ -105,11 +105,25 @@ const validateRegistration = (req, res, next) => {
 
 app.post('/register', validateRegistration, (req, res) => {
     const { username, email, password, address, contact, role } = req.body;
-    const sql = 'INSERT INTO user ( username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
-    db.query(sql, [username, email, password, address, contact, role], (err, result) => {
+
+    // Step 1: Get the highest existing user_id
+    const getMaxIdSql = 'SELECT MAX(user_id) AS maxId FROM user';
+    db.query(getMaxIdSql, (err, results) => {
         if (err) throw err;
-        req.flash('success', 'Registration successful! Please log in.');
-        res.redirect('/login');
+
+        let nextUserId = 1; // default if no users yet
+        if (results[0].maxId !== null) {
+            nextUserId = results[0].maxId + 1;
+        }
+
+        // Step 2: Insert new user with nextUserId
+        const insertSql = 'INSERT INTO user (user_id, username, email, password, address, contact, role) VALUES (?, ?, ?, SHA1(?), ?, ?, ?)';
+        db.query(insertSql, [nextUserId, username, email, password, address, contact, role], (err, result) => {
+            if (err) throw err;
+
+            req.flash('success', 'Registration successful! Please log in.');
+            res.redirect('/login');
+        });
     });
 });
 
