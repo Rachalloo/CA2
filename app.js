@@ -736,14 +736,14 @@ app.get('/addPetFood', (req, res) => {
 
 // Handle adding Pet Food
 app.post('/addPetFood', upload.single('image'), (req, res) => {
-    const { name, category, brand, description, price, quantity } = req.body;
+    const { name, category, brand, ingredients, price, quantity } = req.body;
     const image = req.file ? req.file.filename : null;
-
     const query = `
-        INSERT INTO pet_products (name, category, brand, description, price, quantity, image, type)
+        INSERT INTO pet_products 
+        (name, category, brand, ingredients, price, quantity, image, type)
         VALUES (?, ?, ?, ?, ?, ?, ?, 'Food')
     `;
-    db.query(query, [name, category, brand, description, price, quantity, image], (err) => {
+    db.query(query, [name, category, brand, ingredients, price, quantity, image], (err) => {
         if (err) return res.status(500).send("Error adding pet food.");
         res.redirect('/petFoodList');
     });
@@ -759,15 +759,14 @@ app.get('/editPetFood/:id', (req, res) => {
 
 // Handle updating Pet Food
 app.post('/editPetFood/:id', upload.single('image'), (req, res) => {
-    const { name, category, brand, ingredients, quantity, currentImage } = req.body;
+    const { name, category, brand, ingredients, price, quantity, currentImage } = req.body;
     const image = req.file ? req.file.filename : currentImage;
-
     const query = `
         UPDATE pet_products 
-        SET name = ?, category = ?, brand = ?, ingredients = ?, quantity = ?, image = ?
+        SET name = ?, category = ?, brand = ?, ingredients = ?, price = ?, quantity = ?, image = ?
         WHERE id = ? AND type = 'Food'
     `;
-    db.query(query, [name, category, brand, ingredients, quantity, image, req.params.id], (err) => {
+    db.query(query, [name, category, brand, ingredients, price, quantity, image, req.params.id], (err) => {
         if (err) return res.status(500).send("Error updating food.");
         res.redirect('/petFoodList');
     });
@@ -778,6 +777,14 @@ app.post('/deletePetFood/:id', (req, res) => {
     db.query("DELETE FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], (err) => {
         if (err) return res.status(500).send("Error deleting food.");
         res.redirect('/petFoodList');
+    });
+});
+
+// Show list of Pet Foods
+app.get('/petFoodList', (req, res) => {
+    db.query("SELECT * FROM pet_products WHERE type = 'Food'", (err, results) => {
+        if (err) return res.status(500).send("Error getting food list.");
+        res.render('foodList', { petFoods: results });
     });
 });
 
