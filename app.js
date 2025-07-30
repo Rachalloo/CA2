@@ -1024,9 +1024,9 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
            NULL AS petBreed 
     FROM pet_hotel`;
 
-  db.query(groomingQuery, (err, groomingResults) => {
-    if (err) {
-      console.error('Error fetching grooming appointments:', err);
+  db.query(groomingQuery, (err1, groomingResults) => {
+    if (err1) {
+      console.error('Error fetching grooming appointments:', err1);
       return res.sendStatus(500);
     }
 
