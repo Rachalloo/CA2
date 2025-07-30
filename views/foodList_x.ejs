@@ -7,10 +7,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Pet Council</a>
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
         <% if (user) { %>
           <li class="nav-item"><a class="nav-link" href="/addPetFood">+ Add Pet Food</a></li>
@@ -19,55 +20,47 @@
     </div>
   </nav>
 
+  <!-- Pet Food List Table -->
   <div class="container mt-5">
     <h2 class="text-center mb-4">Pet Food List</h2>
-    <table class="table table-bordered table-hover text-center align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Brand</th>
-          <th>Description</th>
-          <th>Price ($)</th>
-          <th>Quantity</th>
-          <th>Image</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (petFoods.length > 0) { %>
-          <% petFoods.forEach(food => { %>
-            <tr>
-              <td><%= food.food_name %></td>
-              <td><%= food.food_category %></td>
-              <td><%= food.food_brand %></td>
-              <td><%= food.food_description %></td>
-              <td><%= food.food_price ? Number(food.food_price).toFixed(2) : '0.00' %></td>
-              <td><%= food.food_quantity %></td>
-              <td>
-              <td>
-              <td>
-                <% if (food.image) { %>
-                  <img src="/images/<%= food.image %>" alt="Pet Food Image" class="img-fluid rounded" style="max-width: 100px;">
-                  <% } else { %>
-                  No image
-                <% } %>
-              </td>
-
-              <td>
-                <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
-                <a href="/deletePetFood/<%= food.id %>" class="btn btn-sm btn-danger"
-                   onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-              </td>  
-            </tr>
-          <% }) %>
-        <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-dark">
           <tr>
-            <td colspan="8">No pet food items found.</td>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Description</th>
+            <th>Price ($)</th>
+            <th>Quantity</th>
+            <th>Actions</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% if (petFoods && petFoods.length > 0) { %>
+            <% petFoods.forEach(function(food) { %>
+              <tr>
+                <td><%= food.food_name %></td>
+                <td><%= food.food_category %></td>
+                <td><%= food.food_brand %></td>
+                <td><%= food.food_description %></td>
+                <td><%= food.food_price ? Number(food.food_price).toFixed(2) : '0.00' %></td>
+                <td><%= food.food_quantity %></td>
+                <td>
+                  <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary mb-1">Edit</a>
+                  <a href="/deletePetFood/<%= food.id %>" class="btn btn-sm btn-danger"
+                     onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="text-center text-muted">No pet food items found.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
 
     <div class="text-center mt-4 mb-5">
       <a href="/Home" class="btn btn-secondary">Back to Home</a>
