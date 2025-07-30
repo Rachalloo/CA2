@@ -150,7 +150,7 @@ app.post('/login', (req, res) => {
             res.redirect('/dashboard');
         } else {
             req.flash('error', 'Invalid email or password.');
-            res.redirect('/login');
+            res.redirect('/dashboard');
         }
     });
 });
