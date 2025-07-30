@@ -1012,6 +1012,12 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
            NULL AS petBreed 
     FROM appointments`;
 
+  const petHotelQuery = `
+    SELECT id AS id, 'Pet Hotel' AS type, pet_name AS title, customer_name AS name,
+           start_date AS appointmentDate, NULL AS time, pet_name AS petName, 
+           NULL AS petBreed 
+    FROM pet_hotel`;
+
   db.query(groomingQuery, (err, groomingResults) => {
     if (err) {
       console.error('Error fetching grooming appointments:', err);
@@ -1024,17 +1030,25 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         return res.sendStatus(500);
       }
 
-      const allAppointments = groomingResults.concat(vetResults);
-      allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+      db.query(petHotelQuery, (err3, petHotelResults) => {
+        if (err3) {
+          console.error('Error fetching pet hotel bookings:', err3);
+          return res.sendStatus(500);
+        }
 
-      res.render('adminSchedule_E', {
-        appointments: allAppointments,
-        user: req.session.user
+        const allAppointments = groomingResults.concat(vetResults, petHotelResults);
+
+        // Sort by appointmentDate ascending
+        allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+
+        res.render('adminSchedule_E', {
+          appointments: allAppointments,
+          user: req.session.user
+        });
       });
     });
   });
 });
-
 app.get('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const appointmentId = parseInt(req.params.id);
 
