@@ -20,8 +20,11 @@
     <div class="text-center">
       <% if (pets) { %>
         <form action="/editPet/<%= pets.petId %>" method="POST" enctype="multipart/form-data">
-          <label for="name">Pet Name:</label><br>
-          <input type="text" id="name" name="name" value="<%= pets.petName %>" required><br><br>
+          <label for="user">User Name:</label><br>
+          <input type="text" id="user" name="user" value="<%= pets.user %>" required><br><br>
+
+          <label for="pet">Pet Name:</label><br>
+          <input type="text" id="pet" name="pet" value="<%= pets.petName %>" required><br><br>
 
           <label for="startdate">Start Date:</label><br>
           <input type="date" id="startdate" name="startdate" value=<%=pets.startDate %> required><br><br>
