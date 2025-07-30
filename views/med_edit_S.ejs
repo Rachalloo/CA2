@@ -8,7 +8,7 @@
     <div class="container mt-5">
         <h1>Edit Medication</h1>
 
-        <form action="/medications/edit/<%= medication.id %>" method="POST" class="mt-4">
+        <form action="/medications/edit/<%= medication.medication_id %>" method="POST" class="mt-4">
 
             <div class="form-group">
                 <label for="medication_name">Medication Name:</label>
@@ -16,20 +16,20 @@
             </div>
 
             <div class="form-group">
-                <label for="dosage">Dosage:</label>
-                <input type="text" id="dosage" name="dosage" class="form-control" value="<%= medication.dosage %>" required>
+                <label for="medication_dosage">Dosage:</label>
+                <input type="text" id="medication_dosage" name="medication_dosage" class="form-control" value="<%= medication.medication_dosage %>" required>
             </div>
 
             <div class="form-group">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" class="form-control" required><%= medication.instructions %></textarea>
+                <label for="medication_instructions">Instructions:</label>
+                <textarea id="medication_instructions" name="medication_instructions" class="form-control" required><%= medication.medication_instructions %></textarea>
             </div>
 
             <div class="form-group">
-                <label for="licensed">Licensed:</label>
-                <select id="licensed" name="licensed" class="form-control">
-                    <option value="Yes" <%= medication.licensed === 'Yes' ? 'selected' : '' %>>Yes</option>
-                    <option value="No" <%= medication.licensed === 'No' ? 'selected' : '' %>>No</option>
+                <label for="medication_licensed">Licensed:</label>
+                <select id="medication_licensed" name="medication_licensed" class="form-control">
+                    <option value="Yes" <%= medication.medication_licensed === 'Yes' ? 'selected' : '' %>>Yes</option>
+                    <option value="No" <%= medication.medication_licensed === 'No' ? 'selected' : '' %>>No</option>
                 </select>
             </div>
 
