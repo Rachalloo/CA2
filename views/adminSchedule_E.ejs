@@ -28,7 +28,7 @@
                 <%= appointment.appointmentName %>
               </h5>
               <h6 class="card-subtitle mb-2 text-body-secondary">
-                <%= appointment.startdate %> - <%= appointment.enddate %>
+                <%= appointment.appointmentDate %>
               </h6>
               <a href="/admin/schedule/review-reschedule/<%= appointment.appointmentId %>" class="card-link">Approve & Update</a>
               <a href="/admin/schedule/deleteSchedule/<%= appointment.appointmentId %>" class="card-link"
