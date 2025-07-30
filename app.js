@@ -496,7 +496,7 @@ app.get('/programme', (req, res) => {
     const sql = 'SELECT * FROM programme';
 
     // Fetch data from MySQL
-    connection.query(sql, (error, results) => {
+    db.query(sql, (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error Retrieving programme');
@@ -513,7 +513,7 @@ app.get('/programme/:id', (req, res) => {
     const programmeId = req.params.id;
     const sql = 'SELECT * FROM programme WHERE programmeId = ?';
     
-    connection.query(sql, [programmeId], (error, results) => {
+    db.query(sql, [programmeId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving programme by ID');
@@ -540,7 +540,7 @@ app.post('/addProg', upload.single('image'), (req, res) => {
         image = null;
     }
     const sql = "INSERT INTO programme (name, description, startDate, endDate, location, image) VALUES (?, ?, ?, ?, ?, ?)";
-    connection.query(sql, [name, description, startDate, endDate, location, image], (error, results) => {
+    db.query(sql, [name, description, startDate, endDate, location, image], (error, results) => {
         if (error) {
             console.error("Error adding programme:", error);
             res.status(500).send("Error adding programme");
@@ -558,7 +558,7 @@ app.get('/editProg/:id', (req, res) => {
     const programmeId = req.params.id;
     const sql = 'SELECT * FROM programme WHERE programmeId = ?';
     
-    connection.query(sql, [programmeId], (error, results) => {
+    db.query(sql, [programmeId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving programme by ID');
@@ -583,7 +583,7 @@ app.post('/editProg/:id', upload.single('image'), (req, res) => {
 
     const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image=? WHERE programmeId = ?';
 
-    connection.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error, results) => {
+    db.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error, results) => {
         if (error) {
             console.error("Error adding programme:", error);
             res.status(500).send('Error adding programme');
@@ -601,7 +601,7 @@ app.get('/deleteProg/:id', (req, res) => {
     const programmeId = req.params.id;
     const sql = 'DELETE FROM programme WHERE programmeId = ?';
     
-    connection.query(sql, [programmeId], (error, results) => {
+    db.query(sql, [programmeId], (error, results) => {
         if (error) {
             console.error("Error deleting programme:", error);
             res.status(500).send('Error deleting programme');
@@ -616,7 +616,7 @@ app.get('/deleteProg/:id', (req, res) => {
 app.get('/partnership', (req, res) => {
     const sql = 'SELECT * FROM partnership';
 
-    connection.query(sql, (error, results) => {
+    db.query(sql, (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error Retrieving partnership');
@@ -630,7 +630,7 @@ app.get('/partnership/:id', (req, res) => {
     const partnershipId = req.params.id;
     const sql = 'SELECT * FROM partnership WHERE partnershipId = ?';
 
-    connection.query(sql, [partnershipId], (error, results) => {
+    db.query(sql, [partnershipId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving partnership by ID');
@@ -654,7 +654,7 @@ app.post('/addPartnership', upload.single('image'), (req, res) => {
 
     const sql = "INSERT INTO partnership (name, contact, email, image) VALUES (?, ?, ?, ?)";
 
-    connection.query(sql, [name, contact, email, image], (error, results) => {
+    db.query(sql, [name, contact, email, image], (error, results) => {
         if (error) {
             console.error("Error adding partnership:", error);
             res.status(500).send("Error adding partnership");
@@ -672,7 +672,7 @@ app.get('/editPartnership/:id', (req, res) => {
     const partnershipId = req.params.id;
     const sql = 'SELECT * FROM partnership WHERE partnershipId = ?';
 
-    connection.query(sql, [partnershipId], (error, results) => {
+    db.query(sql, [partnershipId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving partnership by ID');
@@ -697,7 +697,7 @@ app.post('/editPartnership/:id', upload.single('image'), (req, res) => {
 
     const sql = 'UPDATE partnership SET name = ?, contact = ?, email = ?, image = ? WHERE partnershipId = ?';
 
-    connection.query(sql, [name, contact, email, image, partnershipId], (error, results) => {
+    db.query(sql, [name, contact, email, image, partnershipId], (error, results) => {
         if (error) {
             console.error("Error updating partnership:", error);
             res.status(500).send('Error updating partnership');
@@ -715,7 +715,7 @@ app.get('/deletePartnership/:id', (req, res) => {
     const partnershipId = req.params.id;
     const sql = 'DELETE FROM partnership WHERE partnershipId = ?';
 
-    connection.query(sql, [partnershipId], (error, results) => {
+    db.query(sql, [partnershipId], (error, results) => {
         if (error) {
             console.error("Error deleting partnership:", error);
             res.status(500).send('Error deleting partnership');
