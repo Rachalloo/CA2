@@ -173,6 +173,10 @@ app.get('/appt_form_create', (req, res) => {
     res.render('appt_form_create_R');
 });
 
+app.get('/submit_success', (req, res) => {
+  res.render('submit_success_R');
+});
+
 app.post('/appt_form_create', (req, res) => {
   const {
     appointmentType,
@@ -220,10 +224,6 @@ app.post('/appt_form_create', (req, res) => {
 
     res.redirect('/submit_success');
   });
-});
-
-app.get('/submit_success', (req, res) => {
-  res.render('submit_success_R'); // Create a submit_success.ejs to show confirmation
 });
 
 // Shopping cart routes
