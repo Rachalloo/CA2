@@ -30,8 +30,8 @@
               <h6 class="card-subtitle mb-2 text-body-secondary">
                 <%= appointment.appointmentDate %>
               </h6>
-              <a href="/user/schedule/reschedule-request/<%= appointment.appointmentId %>" class="card-link">Request for Update</a>
-              <a href="/user/schedule/schedule-delete-request/<%= appointment.appointmentId %>" class="card-link"
+              <a href="/user_schedule_reschedule-request/<%= appointment.appointmentId %>" class="card-link">Request for Update</a>
+              <a href="/user_schedule_schedule-delete-request/<%= appointment.appointmentId %>" class="card-link"
                 onclick="return confirm('Are you sure you want to request for delete?')">Request for Delete</a>
             </div>
           </div>
