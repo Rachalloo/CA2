@@ -896,13 +896,13 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
   const vetQuery = `
     SELECT appointmentId AS id, "Vet" AS type, reason AS title, appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, NULL AS petBreed 
     FROM appointments 
-    WHERE name = ?`;
+    WHERE vet_name = ?`;
 
   // Pet hotel bookings by this user hihih
   const pet_hotelQuery = `
     SELECT id, "Pet Hotel" AS type, pet_name AS title, start_date AS appointmentDate, NULL AS time, NULL AS petName, NULL AS petBreed 
     FROM pet_hotel 
-    WHERE name = ?`;
+    WHERE pet_name = ?`;
 
   db.query(groomingQuery, [user_id], (err1, groomingResults) => {
     if (err1) {
