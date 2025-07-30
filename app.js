@@ -882,7 +882,7 @@ app.get('/Home', checkAuthenticated, (req, res) => {
   res.render('frontPage', { user: req.session.user });
 });
 
-//USER
+//USER ihihi
 app.get('/user_schedule', checkAuthenticated, (req, res) => {
   const user_id = req.session.user.id;
 
