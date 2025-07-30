@@ -321,14 +321,24 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
 //doris part start
 //define routes
 app.get("/petHotel", (req, res) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+         return res.send(`
+            <h2 style="color:red;">Access denied. Admins only.</h2>
+            <p>You will be redirected to the login page in 3 seconds...</p>
+            <script>
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 3000);
+            </script>
+        `);
+    }
     const sql = "SELECT * FROM pet_hotel";
-    //fetch data from mysql
     db.query(sql, (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
-            return res.status(500).send("Error retrieving pet's info");
+            return res.status(500).send("Error retrieving pets");
         }
-    res.render("index_d", {pet: results});
+        res.render("index_d", { pet: results, user: req.session.user, });
     });
 });
 
@@ -344,7 +354,7 @@ app.get("/pet/:id", (req, res) => {
         }
         //check if any pet with the given id was found
         if (results.length > 0) {
-            res.render("petEach_d", {pet: results[0]});
+            res.render("petEach_d", {pet: results[0], user: req.session.user,});
         } else {
             res.status(404).send("Pet not found");
         }
@@ -352,10 +362,10 @@ app.get("/pet/:id", (req, res) => {
 });
 
 //add pet
-app.get("/addPet", (req, res) => {
-    res.render("addPet_d");
+app.get("/addPet", checkAuthenticated, checkAdmin, (req, res) => {
+    res.render("addPet_d", {user: req.session.user});
 });
-app.post("/addPet", upload.single("image"), (req, res) => {
+app.post("/addPet", checkAuthenticated, checkAdmin, upload.single("image"), (req, res) => {
     const {customer_name, pet_name, start_date, end_date} = req.body;
     let image;
     if (req.file) {
@@ -375,7 +385,7 @@ app.post("/addPet", upload.single("image"), (req, res) => {
 });
 
 //edit pet
-app.get("/editPet/:id", (req, res) => {
+app.get("/editPet/:id", checkAuthenticated, checkAdmin, (req, res) => {
     const id = req.params.id;
     const sql = "SELECT * FROM pet_hotel WHERE id = ?";
     db.query(sql, [id], (error, results) => {
@@ -384,14 +394,14 @@ app.get("/editPet/:id", (req, res) => {
             return res.status(500).send("Error retrieving student by ID");
         }
         if (results.length > 0) {
-            res.render("editPet_d", {pet: results[0]});
+            res.render("editPet_d", {pet: results[0], user: req.session.user});
         } else {
             res.status(404).send("Pet not found");
         }
     });
 });
 
-app.post("/editPet/:id", upload.single("image"), (req, res) => {
+app.post("/editPet/:id", checkAuthenticated, checkAdmin, upload.single("image"), (req, res) => {
     const id = req.params.id;
     const {customer_name, pet_name, start_date, end_date} = req.body;
     let image = req.body.currentImage; //retrieve current image filename
@@ -410,7 +420,7 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
 });
 
 //delete pet
-app.get("/deletePet/:id", (req, res) => {
+app.get("/deletePet/:id", checkAuthenticated, checkAdmin, (req, res) => {
     const id = req.params.id;
     const sql = "DELETE FROM pet_hotel WHERE id = ?";
     db.query(sql, [id], (error, results) => {

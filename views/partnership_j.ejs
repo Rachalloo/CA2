@@ -13,7 +13,7 @@
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Pet Council Pharmacy</a>
+            <a class="navbar-brand" href="/">Pet Council</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -39,13 +39,11 @@
                 <% partnerships.forEach(partnership=> { %>
                     <div class="col-md-4 mb-4">
                         <div class="card h-100">
-                            <% if (partnership.image) { %>
-                                <img src="/Pictures/<%= partnership.image %>"class="card-img-top" alt="Partnership Image" />
-                            <% } %>
+                            <img src="/images/<%= partnership.image %>"class="card-img-top img-fluid" style="height: 400px; width: 100%;" alt="Partnership Image">
                             <div class="card-body">
                                 <p>Name:<br><%= partnership.name %></p>
                                 <p>Contact:<br><%= partnership.contact %></p>
-                                <p>Email:<br><%= partnership.email %></p>
+                                <p>Email:<br><a href="mailto:<%= partnership.email %>"><%= partnership.email %></a></p>
                             </div>
                             <% if (user && user.role==='admin' ) { %>
                                 <div class="card-footer text-center">
@@ -65,7 +63,7 @@
         </div>
     </div>
     <div class="text-center mt-4">
-    <a href="/Home">Back</a>
+    <a href="/frontPage">Back</a>
     </div>
     <footer class="bg-dark text-white text-center py-3 mt-5">
         <p>&copy; 2025 Pet Council. All rights reserved.</p>
