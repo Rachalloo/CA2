@@ -8,48 +8,44 @@
 <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Pet Council Pharmacy</a>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/partnership">Back to Partnership</a>
-                </li>
-            </ul>
+            <a class="navbar-brand" href="/">Pet Council</a>
         </div>
     </nav>
     
     <div class="container mt-5">
         <h2 class="text-center mb-4">Edit Partnership</h2>
-        <form action="/editPartnership/<%= partnership.id %>" method="POST" enctype="multipart/form-data" class="mx-auto">
+        <form action="/editPartnership/<%= partnership.partnershipId %>" method="POST" enctype="multipart/form-data"
+            class="mx-auto">
             <div class="mb-3">
                 <label for="name" class="form-label">Partnership Name</label>
                 <input type="text" class="form-control" id="name" name="name" value="<%= partnership.name %>" required>
             </div>
-    
+        
             <div class="mb-3">
                 <label for="contact" class="form-label">Contact</label>
-                <input type="text" class="form-control" id="contact" name="contact" value="<%= partnership.contact %>"
-                    required>
+                <input type="text" class="form-control" id="contact" name="contact" value="<%= partnership.contact %>" required>
             </div>
-    
+        
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" value="<%= partnership.email %>" required>
             </div>
-    
+        
             <div class="mb-3">
                 <label for="image">Current Image:</label><br>
-                <input type="text" name="currentImage" value=<%=partnership.image%>readonly><br>
-                <img src="/Pictures/<%= partnership.image %>" width="40%"><br><br>
-    
-                New Image: <br><input type="file" id="image" name="image" accept="image/*"
-                    value=<%=partnership.image%>><br><br>
+                <input type="text" name="currentImage" value="<%= partnership.image %>" readonly><br>
+                <img src="/images/<%= partnership.image %>" width="100px"><br><br>
+        
+                New Image: <br>
+                <input type="file" id="image" name="image" accept="image/*"><br><br>
             </div>
-    
+        
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Update Partnership</button>
-                <a href="/partnership_j" class="btn btn-secondary ms-2">Cancel</a>
+                <a href="/partnership" class="btn btn-secondary ms-2">Cancel</a>
             </div>
         </form>
+
     </div>
 </body>
 </html>
