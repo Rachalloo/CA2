@@ -660,7 +660,7 @@ app.post('/addPartnership', upload.single('image'), (req, res) => {
             res.status(500).send("Error adding partnership");
         } else {
             if (req.session.user && req.session.user.role === 'admin') {
-                res.redirect('/programme');  // (Double-check: did you mean '/partnership'?)
+                res.redirect('/partnership');  
             } else {
                 res.redirect('/');
             }
