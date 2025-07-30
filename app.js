@@ -320,141 +320,105 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
 
 //doris part start
 //define routes
-app.get("/petDetails", (req, res) => {
-    if (!req.session.user || req.session.user.role !== "admin") {
-         return res.send(`
-            <h2 style="color:red;">Access denied. Admins only.</h2>
-            <p>You will be redirected to the login page in 3 seconds...</p>
-            <script>
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 3000);
-            </script>
-        `);
-    }
-    const sql = "SELECT * FROM pets";
+app.get("/petHotel", (req, res) => {
+    const sql = "SELECT * FROM pet_hotel";
+    //fetch data from mysql
     db.query(sql, (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
-            return res.status(500).send("Error retrieving pets.");
+            return res.status(500).send("Error retrieving pet's info");
         }
-        res.render("index_d", { pets: results });
+    res.render("index_d", {pet: results});
     });
 });
 
-//display pet
+//display pet 
 app.get("/pet/:id", (req, res) => {
-    //extract the pet id from the request parameters
-    const petId = req.params.id;
-    const sql = "SELECT * FROM pets WHERE petId = ?";
-    //fetch data from mysql based on the pet id
-    db.query(sql, [petId], (error, results) => {
+    //extract the id from the request parameters
+    const id = req.params.id;
+    const sql = "SELECT * FROM pet_hotel WHERE id = ?";
+    db.query(sql, [id], (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
-            return res.status(500).send("Error retrieving pet by ID.");
+            return res.status(500).send("Error retrieving pet by ID");
         }
         //check if any pet with the given id was found
         if (results.length > 0) {
-            //render html page with the pet data
-            res.render("pet_d", {pets: results[0]});
+            res.render("petEach_d", {pet: results[0]});
         } else {
-            //if no pet with the given id was found, render a 404 page or handle it accordingly 
-            res.status(404).send("Pet not found.");
+            res.status(404).send("Pet not found");
         }
     });
 });
 
-//add pet 
+//add pet
 app.get("/addPet", (req, res) => {
-    if (!req.session.user || req.session.user.role !== "admin") {
-        return res.status(403).send("Access denied. Admins only.");
-    }
     res.render("addPet_d");
 });
 app.post("/addPet", upload.single("image"), (req, res) => {
-    if (!req.session.user || req.session.user.role !== "admin") {
-        return res.status(403).send("Access denied. Admins only.");
+    const {customer_name, pet_name, start_date, end_date} = req.body;
+    let image;
+    if (req.file) {
+        image = req.file.filename; 
+    } else {
+        image = null;
     }
-    const { user, petName, startDate, endDate } = req.body;
-    let image = req.file ? req.file.filename : null;
-    const sql = "INSERT INTO pets (user, petName, startDate, endDate, image) VALUES (?, ?, ?, ?, ?)";
-    db.query(sql, [user, petName, startDate, endDate, image], (error, results) => {
+    const sql = "INSERT INTO pet_hotel (customer_name, pet_name, start_date, end_date, image) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [customer_name, pet_name, start_date, end_date, image], (error, results) => {
         if (error) {
             console.error("Error adding pet:", error);
-            return res.status(500).send("Error adding pet.");
+            res.status(500).send("Error adding pet");
         } else {
-            res.redirect("/petDetails");
+            res.redirect("/petHotel");
         }
     });
 });
 
 //edit pet
 app.get("/editPet/:id", (req, res) => {
-    if (!req.session.user || req.session.user.role !== "admin") {
-        return res.send(`
-            <h2 style="color:red;">Access denied. Admins only.</h2>
-            <p>Redirecting to login...</p>
-            <script>
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 3000);
-            </script>
-        `);
-    }
-    const petId = req.params.id;
-    const sql = "SELECT * FROM pets WHERE petId = ?";
-    db.query(sql, [petId], (error, results) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM pet_hotel WHERE id = ?";
+    db.query(sql, [id], (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
-            return res.status(500).send("Error retrieving pet by ID.");
+            return res.status(500).send("Error retrieving student by ID");
         }
         if (results.length > 0) {
-            res.render("editPet_d", { pets: results[0] });
+            res.render("editPet_d", {pet: results[0]});
         } else {
-            res.status(404).send("Pet not found.");
+            res.status(404).send("Pet not found");
         }
     });
 });
-app.post("/editPet/:id", upload.single("image"), (req, res) => {
-    if (!req.session.user || req.session.user.role !== "admin") {
-        return res.send(`
-            <h2 style="color:red;">Access denied. Admins only.</h2>
-            <p>Redirecting to login...</p>
-            <script>
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 3000);
-            </script>
-        `);
-    }
-    const petId = req.params.id;
-    const {user, petName, startDate, endDate } = req.body;
-    let image = req.body.currentImage;
 
-    if (req.file) {
-        image = req.file.filename;
+app.post("/editPet/:id", upload.single("image"), (req, res) => {
+    const id = req.params.id;
+    const {customer_name, pet_name, start_date, end_date} = req.body;
+    let image = req.body.currentImage; //retrieve current image filename
+    if (req.file) { //if new image is uploaded
+        image = req.file.filename //set image to be new image filename
     }
-    const sql = "UPDATE pets SET user = ?, petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
-    db.query(sql, [user, petName, startDate, endDate, image, petId], (error, results) => {
+    const sql = "UPDATE pet_hotel SET customer_name = ?, pet_name = ?, start_date = ?, end_date = ? WHERE id = ?";
+    db.query(sql, [customer_name, pet_name, start_date, end_date, image, id], (error, results) => {
         if (error) {
             console.error("Error updating pet:", error);
-            return res.status(500).send("Error updating pet.");
+            res.status(500).send("Error updating pet");
         } else {
-            res.redirect("/petDetails");
+            res.redirect("/petHotel");
         }
     });
 });
 
-//delete pet 
+//delete pet
 app.get("/deletePet/:id", (req, res) => {
-    const petId = req.params.id;
-    const sql = "DELETE FROM pets WHERE petId = ?";
-    db.query(sql, [petId], (error, results) => {
+    const id = req.params.id;
+    const sql = "DELETE FROM pet_hotel WHERE id = ?";
+    db.query(sql, [id], (error, results) => {
         if (error) {
             console.error("Error deleting pet:", error);
-            res.status(500).send("Error deleting pet.");
+            res.status(500).send("Error deleting pet");
         } else {
-            res.redirect("/petDetails");
+            res.redirect("/petHotel");
         }
     });
 });
@@ -465,9 +429,7 @@ app.get("/search", (req, res) => {
     const sql = searchQuery 
         ? "SELECT * FROM pets WHERE petName LIKE ?"
         : "SELECT * FROM pets";
-
     const params = searchQuery ? [`%${searchQuery}%`] : [];
-
     db.query(sql, params, (err, results) => {
         if (err) {
             console.error("Error searching pets:", err.message);
