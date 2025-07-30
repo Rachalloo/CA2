@@ -521,7 +521,7 @@ app.post('/medications/delete/:id', (req, res) => {
     const sql = 'DELETE FROM medications WHERE medication_id = ?';
     db.query(sql, [req.params.id], (err) => {
         if (err) throw err;
-        req.flash('success', 'Medication updated!');
+        req.flash('success', 'Medication deleted!');
         res.redirect('/medications');
     });
 });
