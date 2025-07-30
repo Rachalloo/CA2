@@ -958,12 +958,20 @@ app.post('/user_schedule_schedule-delete-request/:id', checkAuthenticated, (req,
 
 //ADMIN 
 app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
-  const groomingQuery = 'SELECT groomingId AS id, "Grooming" AS type, appointment AS title, name, date AS appointmentDate, time, petName, petBreed FROM grooming';
-  const vetQuery = 'SELECT appointmentId AS id, "Vet" AS type, reason AS title, vet_name AS name, appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, NULL AS petBreed FROM appointments';
+  const groomingQuery = `
+    SELECT groomingId AS id, 'Grooming' AS type, appointment AS title, name, 
+           date AS appointmentDate, time, petName, petBreed 
+    FROM grooming`;
+
+  const vetQuery = `
+    SELECT appointmentId AS id, 'Vet' AS type, reason AS title, vet_name AS name, 
+           appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, 
+           NULL AS petBreed 
+    FROM appointments`;
 
   db.query(groomingQuery, (err, groomingResults) => {
     if (err) {
-      console.error('Error fetching grooming:', err);
+      console.error('Error fetching grooming appointments:', err);
       return res.sendStatus(500);
     }
 
@@ -973,15 +981,33 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         return res.sendStatus(500);
       }
 
-      const allAppointments = [...groomingResults, ...vetResults];
-
-      // Optional: sort by date
+      const allAppointments = groomingResults.concat(vetResults);
       allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
 
       res.render('adminSchedule_E', {
         appointments: allAppointments,
         user: req.session.user
       });
+    });
+  });
+});
+
+app.get('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
+  const appointmentId = parseInt(req.params.id);
+
+  db.query('SELECT * FROM appointments WHERE appointmentId = ?', [appointmentId], (error, results) => {
+    if (error) {
+      console.error('DB error:', error);
+      return res.status(500).send('Database error');
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send('Appointment not found');
+    }
+
+    res.render('addSchedule_E', {
+      appointment: results[0],
+      user: req.session.user
     });
   });
 });
@@ -993,47 +1019,25 @@ app.post('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin
     'SELECT new_appointment_date, delete_request FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
     [appointmentId],
     (error, results) => {
-      if (error) throw error
+      if (error) return res.status(500).send('Error fetching reschedule info');
       if (results.length === 0) return res.status(404).send('No reschedule request found.');
 
       const { delete_request, new_appointment_date } = results[0];
 
       db.query(
-        `UPDATE appointments SET reschedule_request = 0, delete_request = ?, appointment_date = ?, date_of_request = NULL, new_appointment_date = NULL WHERE appointmentId = ?`,
+        `UPDATE appointments 
+         SET reschedule_request = 0, delete_request = ?, appointment_date = ?, 
+             date_of_request = NULL, new_appointment_date = NULL 
+         WHERE appointmentId = ?`,
         [delete_request, new_appointment_date, appointmentId],
         (err) => {
           if (err) {
-            console.error("Error Rescheduling:", err);
-            res.status(500).send('Error Rescheduling');
-          } else {
-            res.redirect('/admin_schedule');
+            console.error("Error updating appointment:", err);
+            return res.status(500).send('Error rescheduling');
           }
+          res.redirect('/admin_schedule');
         }
       );
-    }
-  );
-});
-
-app.get('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
-  const appointmentId = parseInt(req.params.id)
-
-  db.query(
-    'SELECT * FROM appointments WHERE appointmentId = ?',
-    [appointmentId],
-    (error, results) => {
-      if (error) {
-        console.error('Database error:', error);
-        return res.status(500).send('DB Error.');
-      }
-
-      if (results.length === 0) {
-        console.warn('No appointment found with ID:', appointmentId);
-        return res.status(404).send('Appointment not found');
-      }
-      res.render('addSchedule_E', {
-        appointment: results[0],
-        user: req.session.user
-      });
     }
   );
 });
