@@ -495,7 +495,7 @@ app.post('/appointments/add', (req, res) => {
 
 // UPDATE: Edit form
 app.get('/appointments/edit/:id', (req, res) => {
-    db.query('SELECT * FROM appointments WHERE id = ?', [req.params.id], (err, results) => {
+    db.query('SELECT * FROM appointments WHERE appointmentId = ?', [req.params.id], (err, results) => {
         if (err) throw err;
         res.render('appt_edit_S', { appointment: results[0], user: req.session.user });
     });
@@ -503,9 +503,9 @@ app.get('/appointments/edit/:id', (req, res) => {
 
 // UPDATE: Edit form submission
 app.post('/appointments/edit/:id', (req, res) => {
-    const { pet_name, vet_name, date, time } = req.body;
-    const sql = 'UPDATE appointments SET pet_name = ?, vet_name = ?, date = ?, time = ? WHERE id = ?';
-    db.query(sql, [pet_name, vet_name, date, time, req.params.id], (err) => {
+    const { pet_name, vet_name, appointment_date, reason, status } = req.body;
+    const sql = 'UPDATE appointments SET pet_name = ?, vet_name = ?, appointment_date = ?, reason = ?, status = ? WHERE appointmentId = ?';
+    db.query(sql, [pet_name, vet_name, appointment_date, reason, status, req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Appointment updated!');
         res.redirect('/appointments');
@@ -514,7 +514,7 @@ app.post('/appointments/edit/:id', (req, res) => {
 
 // DELETE: Delete Appointment
 app.get('/appointments/delete/:id', (req, res) => {
-    db.query('DELETE FROM appointments WHERE id = ?', [req.params.id], (err) => {
+    db.query('DELETE FROM appointments WHERE appointmentId = ?', [req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Appointment deleted!');
         res.redirect('/appointments');
