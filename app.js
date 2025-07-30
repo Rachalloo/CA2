@@ -169,11 +169,11 @@ app.get('/grooming', (req, res) => {
     res.render('grooming_R');
 });
 
-app.get('/appt_from_create', (req, res) => {
-    res.render('appt_from_create_SRD');
+app.get('/appt_form_create', (req, res) => {
+    res.render('appt_form_create_SRD');
 });
 
-app.post('/appt_from_create', (req, res) => {
+app.post('/appt_form_create', (req, res) => {
     console.log(req.body);
     res.send('Appointment submitted successfully!');
 });
