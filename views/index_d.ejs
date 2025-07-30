@@ -20,7 +20,8 @@
     <table class="table table-hover small text-center">
       <thead>
         <tr>
-          <th width="150">Pet Name</th>
+          <th width="100">User Name</th>
+          <th width="100">Pet Name</th>
           <th width="150">Pet Image</th>
           <th width="100">Start Date</th>
           <th width="100">End Date</th>
@@ -31,6 +32,9 @@
       <tbody>
         <% for(let i=0; i < pets.length; i++) { %>
           <tr>
+            <td>
+              <%= pets[i].user %>
+            </td>
             <td>
               <%= pets[i].petName %>
             </td>
@@ -51,7 +55,7 @@
     </table>
   </div>
 
-<button onclick="window.location.href='/Home'">Back to Home</button>
+<p class="mx-auto p-2"><a class="btn btn-light btn-sm" href="/Home" role="button">Back to Home</a></p>
 
 <!-- Footer -->
 <footer class="bg-dark text-white text-center py-3 mt-5">
