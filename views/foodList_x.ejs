@@ -43,7 +43,7 @@
               <td><%= food.food_category %></td>
               <td><%= food.food_brand %></td>
               <td><%= food.food_description %></td>
-              <td><%= food.food_price.toFixed(2) %></td>
+              <td><%= Number(food.food_price).toFixed(2) %></td>
               <td><%= food.food_quantity %></td>
               <td>
                 <% if (food.image) { %>
