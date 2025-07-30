@@ -10,8 +10,6 @@
 </head>
 
 <body>
-   <%- include ('header_E') %>
-
   <div class="container">
     <br>
     <div class="text-center">
@@ -20,6 +18,9 @@
     <br>
     <% if (pets) { %> <!--check if pet data exists-->
       <div>
+        <p><b>User Name:</b><br>
+          <%= pets.user %>
+        </p>
         <p><b>Pet Name:</b><br>
           <%= pets.petName %>
         </p>
