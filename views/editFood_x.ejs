@@ -19,7 +19,7 @@
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/addPetFood">Add New Food</a>
+            <a class="nav-link" href="/addFood">Add New Food</a>
           </li>
         </ul>
       </div>
@@ -30,7 +30,7 @@
     <h2 class="text-center mb-4">Update Pet Food</h2>
 
     <% if (food) { %>
-      <form action="/editPetFood/<%= food.foodId %>" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
+      <form action="/editFood/<%= food.foodId %>" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
         <div class="mb-3">
           <label for="name" class="form-label">Food Name</label>
           <input type="text" id="name" name="name" class="form-control" value="<%= food.name %>" required>

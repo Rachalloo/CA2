@@ -728,55 +728,59 @@ app.get('/deletePartnership/:id', (req, res) => {
 //Jeslyn part end
 
 //Xinyue part start
+
 // Show form to add Pet Food
-app.get('/pet-products/add/food', (req, res) => {
-    res.render('addFood_x');
+app.get('/addPetFood', (req, res) => {
+    res.render('addFood');
 });
 
 // Handle adding Pet Food
-app.post('/pet-products/add/food', (req, res) => {
-    const { name, type, price } = req.body;
-    const query = "INSERT INTO pet_products (name, type, price) VALUES (?, ?, ?)";
-    db.query(query, [name, type, price], (err) => {
+app.post('/addPetFood', upload.single('image'), (req, res) => {
+    const { name, category, brand, description, price, quantity } = req.body;
+    const image = req.file ? req.file.filename : null;
+
+    const query = `
+        INSERT INTO pet_products (name, category, brand, description, price, quantity, image, type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'Food')
+    `;
+    db.query(query, [name, category, brand, description, price, quantity, image], (err) => {
         if (err) return res.status(500).send("Error adding pet food.");
-        res.redirect('/pet-products');
+        res.redirect('/petFoodList');
     });
 });
 
-// Handle adding Medication
-app.post('/pet-products/add/medication', (req, res) => {
-    const { name, type, price } = req.body;
-    const query = "INSERT INTO pet_products (name, type, price) VALUES (?, ?, ?)";
-    db.query(query, [name, type, price], (err) => {
-        if (err) return res.status(500).send("Error adding medication.");
-        res.redirect('/pet-products');
-    });
-});
-
-//Edit Pet Food
-app.get('/pet-products/edit/food/:id', (req, res) => {
+// Show form to edit Pet Food
+app.get('/editPetFood/:id', (req, res) => {
     db.query("SELECT * FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], (err, results) => {
         if (err || results.length === 0) return res.status(404).send("Food not found.");
-        res.render('editFood', { product: results[0] });
+        res.render('editFood', { food: results[0] });
     });
 });
-app.post('/pet-products/edit/food/:id', (req, res) => {
-    const { name, price } = req.body;
-    db.query("UPDATE pet_products SET name = ?, price = ? WHERE id = ? AND type = 'Food'", [name, price, req.params.id], err => {
+
+// Handle updating Pet Food
+app.post('/editPetFood/:id', upload.single('image'), (req, res) => {
+    const { name, category, brand, ingredients, quantity, currentImage } = req.body;
+    const image = req.file ? req.file.filename : currentImage;
+
+    const query = `
+        UPDATE pet_products 
+        SET name = ?, category = ?, brand = ?, ingredients = ?, quantity = ?, image = ?
+        WHERE id = ? AND type = 'Food'
+    `;
+    db.query(query, [name, category, brand, ingredients, quantity, image, req.params.id], (err) => {
         if (err) return res.status(500).send("Error updating food.");
-        res.redirect('/pet-food');
+        res.redirect('/petFoodList');
     });
 });
-;
 
-
-//Delete Pet Food
-app.post('/pet-products/delete/food/:id', (req, res) => {
-    db.query("DELETE FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], err => {
+// Handle deleting Pet Food
+app.post('/deletePetFood/:id', (req, res) => {
+    db.query("DELETE FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], (err) => {
         if (err) return res.status(500).send("Error deleting food.");
-        res.redirect('/pet-products');
+        res.redirect('/petFoodList');
     });
 });
+
 //Xinyue part end
 
 // En Hui's Part.
