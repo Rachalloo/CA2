@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Update Pet Food</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
 </head>
 <body>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -23,7 +23,7 @@
       <form action="/editPetFood/<%= food.id %>" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
         <div class="mb-3">
           <label for="food_name" class="form-label">Food Name</label>
-          <input type="text" id="food_name" name="food_name" class="form-control" value="<%= food.food_name %>" required />
+          <input type="text" id="food_name" name="food_name" class="form-control" value="<%= food.food_name %>" required>
         </div>
 
         <div class="mb-3">
@@ -38,7 +38,7 @@
 
         <div class="mb-3">
           <label for="food_brand" class="form-label">Brand</label>
-          <input type="text" id="food_brand" name="food_brand" class="form-control" value="<%= food.food_brand %>" required />
+          <input type="text" id="food_brand" name="food_brand" class="form-control" value="<%= food.food_brand %>" required>
         </div>
 
         <div class="mb-3">
@@ -48,20 +48,20 @@
 
         <div class="mb-3">
           <label for="food_price" class="form-label">Price ($)</label>
-          <input type="number" id="food_price" name="food_price" class="form-control" step="0.01" min="0" value="<%= food.food_price %>" required />
+          <input type="number" id="food_price" name="food_price" class="form-control" step="0.01" min="0" value="<%= food.food_price %>" required>
         </div>
 
         <div class="mb-3">
           <label for="food_quantity" class="form-label">Quantity</label>
-          <input type="number" id="food_quantity" name="food_quantity" class="form-control" min="0" value="<%= food.food_quantity %>" required />
+          <input type="number" id="food_quantity" name="food_quantity" class="form-control" min="0" value="<%= food.food_quantity %>" required>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Current Image</label>
-          <input type="text" name="currentImage" class="form-control" value="<%= food.image %>" readonly />
+          <input type="text" name="currentImage" class="form-control" value="<%= food.image %>" readonly>
           <% if (food.image) { %>
             <div class="mt-2">
-              <img src="/images/<%= food.image %>" alt="Current Image" class="img-thumbnail" style="max-width: 200px;" />
+              <img src="/Pictures/<%= food.image %>" alt="Current Image" class="img-thumbnail" style="max-width: 200px;" />
             </div>
           <% } else { %>
             <div class="mt-2 text-muted">No image available.</div>
