@@ -174,18 +174,52 @@ app.get('/appt_form_create', (req, res) => {
 });
 
 app.post('/appt_form_create', (req, res) => {
-    console.log(req.body);
-    res.render('appt_form_create_R');
-});
+  const {
+    appointmentType,
+    name,
+    contact,
+    email,
+    preferredDate,
+    preferredTime,
+    firsttimeCustomer,
+    petName,
+    petBreed,
+    petAge,
+    healthCondition,
+    description
+  } = req.body;
 
-app.post('/appt_form_create', (req, res) => {
-  const formData = req.body;
+  // Create a simple ID (e.g., current timestamp)
+  const groomingId = Date.now();
 
-  res.redirect('/submit_success');
-});
+  const sql = `INSERT INTO grooming 
+    (groomingId, appointmentType, name, contact, email, preferredDate, preferredTime, firsttimeCustomer, petName, petBreed, petAge, healthCondition, description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-app.get('/submit_success', (req, res) => {
-  res.render('submit_success_R');
+  const values = [
+    groomingId,
+    appointmentType,
+    name,
+    contact,
+    email,
+    preferredDate,
+    preferredTime,
+    firsttimeCustomer,
+    petName,
+    petBreed,
+    petAge,
+    healthCondition,
+    description
+  ];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting appointment:', err);
+      return res.send('Error occurred');
+    }
+
+    res.redirect('/submit_success_R');
+  });
 });
 
 // Shopping cart routes
