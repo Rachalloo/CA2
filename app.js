@@ -170,12 +170,12 @@ app.get('/grooming', (req, res) => {
 });
 
 app.get('/appt_form_create', (req, res) => {
-    res.render('appt_form_create_SRD');
+    res.render('appt_form_create_R');
 });
 
 app.post('/appt_form_create', (req, res) => {
     console.log(req.body);
-    res.render('appt_form_create_SRD');
+    res.render('appt_form_create_R');
 });
 
 app.post('/appt_form_create', (req, res) => {
@@ -185,7 +185,7 @@ app.post('/appt_form_create', (req, res) => {
 });
 
 app.get('/submit_success', (req, res) => {
-  res.render('submit_success_SRD');
+  res.render('submit_success_R');
 });
 
 // Shopping cart routes
