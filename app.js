@@ -360,10 +360,10 @@ app.get("/pet/:id", (req, res) => {
 });
 
 //add pet
-app.get("/addPet", checkAuthenticated, checkAdmin, (req, res) => {
+app.get("/addPet", (req, res) => {
     res.render("addPet_d", {user: req.session.user});
 });
-app.post("/addPet", checkAuthenticated, checkAdmin, upload.single("image"), (req, res) => {
+app.post("/addPet", upload.single("image"), (req, res) => {
     const {customer_name, pet_name, start_date, end_date} = req.body;
     let image;
     if (req.file) {
