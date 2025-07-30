@@ -885,9 +885,8 @@ app.get('/user_schedule_reschedule_request/:id', checkAuthenticated, (req, res) 
             if (error) return res.sendStatus(500);
             if (results.length === 0)
                 return res.sendStatus(404);
-            res.render('addSchedule_E', { appointment: results[0] });
-        }
-    );
+            res.render('addSchedule_E', { appointment: results[0], user: req.session.user });
+        });
 });
 
 app.post('/user_schedule_reschedule-request/:id', checkAuthenticated, (req, res) => {
@@ -924,7 +923,7 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         'SELECT * FROM appointments',
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('adminSchedule_E', { requests: results, user: req.session.user});
+            res.render('adminSchedule_E', { requests: results, user: req.session.user });
         }
     );
 });
