@@ -225,15 +225,6 @@ app.post('/appt_form_create', (req, res) => {
   });
 });
 
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error inserting appointment:', err);
-      return res.send('Error occurred');
-    }
-
-    res.redirect('/submit_success');
-  });
-
 // Shopping cart routes
 app.get('/shop', (req, res) => {
     res.render('shop_R', { products, user: req.session.user, messages: req.flash('success') });
