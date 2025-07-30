@@ -760,8 +760,8 @@ app.get('/petFoodList', (req, res) => {
 
 // En Hui's Part.
 // HOME
-app.get('/Home', checkAuthenticated, (req, res) => {
-    res.render('frontPage');
+app.get('/home', checkAuthenticated, (req, res) => {
+    res.render('frontPage', { user: req.session.user });
 });
 
 //USER
