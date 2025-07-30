@@ -411,14 +411,14 @@ app.get('/appointments', (req, res) => {
 
 // CREATE: Form to Add appointment
 app.get('/appointments/add', (req, res) => {
-    res.render('appt_add_S', {user: req.session.user});
+    res.render('appt_form_create_SRD', {user: req.session.user});
 });
 
 // CREATE: Form submission
 app.post('/appointments/add', (req, res) => {
-    const { pet_name, vet_name, date, time } = req.body;
-    const sql = 'INSERT INTO appointments (pet_name, vet_name, date, time) VALUES (?, ?, ?, ?)';
-    db.query(sql, [pet_name, vet_name, date, time], (err) => {
+    const { pet_name, vet_name, appointment_date, reason, status } = req.body;
+    const sql = 'INSERT INTO appointments (pet_name, vet_name, appointment_date, reason, status) VALUES (?, ?, ?, ?,?)';
+    db.query(sql, [pet_name, vet_name, appointment_date, reason, status], (err) => {
         if (err) throw err;
         req.flash('success', 'Appointment added!');
         res.redirect('/appointments');
