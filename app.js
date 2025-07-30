@@ -218,12 +218,12 @@ app.post('/appt_form_create', (req, res) => {
       return res.send('Error occurred');
     }
 
-    res.redirect('/submit_success_R');
+    res.redirect('/submit_success');
   });
 });
 
 app.get('/submit_success', (req, res) => {
-  res.render('submit_success'); // Create a submit_success.ejs to show confirmation
+  res.render('submit_success_R'); // Create a submit_success.ejs to show confirmation
 });
 
 // Shopping cart routes
