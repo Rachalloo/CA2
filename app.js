@@ -710,10 +710,10 @@ app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => 
 //Jeslyn part end
 
 // xinyue part end
+
 // List all Pet Food items
 app.get('/petFoodList', (req, res) => {
-  const sql = "SELECT * FROM pet_products";
-  db.query(sql, (err, results) => {
+  db.query("SELECT * FROM pet_food", (err, results) => {
     if (err) {
       console.error('Database query error:', err.message);
       return res.status(500).send('Error retrieving pet food list');
@@ -728,7 +728,7 @@ app.get('/petFoodList', (req, res) => {
 // OPTIONAL: View a single pet food item by id
 app.get('/petFood/:id', (req, res) => {
   const id = req.params.id;
-  db.query("SELECT * FROM pet_products WHERE id = ?", [id], (err, results) => {
+  db.query("SELECT * FROM pet_food WHERE id = ?", [id], (err, results) => {
     if (err) {
       console.error('Database query error:', err.message);
       return res.status(500).send('Error retrieving pet food by ID');
@@ -750,9 +750,11 @@ app.get('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
 app.post('/addPetFood', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
   const { food_name, food_category, food_brand, food_description, food_price, food_quantity } = req.body;
   const image = req.file ? req.file.filename : null;
-  const sql = `INSERT INTO pet_products 
-              (food_name, food_category, food_brand, food_description, food_price, food_quantity, image)
-              VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const sql = `
+    INSERT INTO pet_food
+    (food_name, food_category, food_brand, food_description, food_price, food_quantity, image)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
   db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image], (err) => {
     if (err) {
       console.error('Error adding pet food:', err.message);
@@ -765,7 +767,7 @@ app.post('/addPetFood', checkAuthenticated, checkAdmin, upload.single('image'), 
 // Show form to edit Pet Food
 app.get('/editPetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const id = req.params.id;
-  db.query("SELECT * FROM pet_products WHERE id = ?", [id], (err, results) => {
+  db.query("SELECT * FROM pet_food WHERE id = ?", [id], (err, results) => {
     if (err) {
       console.error('Database query error:', err.message);
       return res.status(500).send('Error retrieving pet food by id');
@@ -783,7 +785,11 @@ app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, upload.single('imag
   const id = req.params.id;
   const { food_name, food_category, food_brand, food_description, food_price, food_quantity, currentImage } = req.body;
   const image = req.file ? req.file.filename : currentImage;
-  const sql = `UPDATE pet_products SET food_name = ?, food_category = ?, food_brand = ?, food_description = ?, food_price = ?, food_quantity = ?, image = ? WHERE id = ?`;
+  const sql = `
+    UPDATE pet_food
+    SET food_name = ?, food_category = ?, food_brand = ?, food_description = ?, food_price = ?, food_quantity = ?, image = ?
+    WHERE id = ?
+  `;
   db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image, id], (err) => {
     if (err) {
       console.error('Error updating pet food:', err.message);
@@ -793,10 +799,10 @@ app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, upload.single('imag
   });
 });
 
-// Delete Pet Food - GET (with middleware)
+// Delete Pet Food - GET (with admin middleware)
 app.get('/deletePetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const id = req.params.id;
-  db.query("DELETE FROM pet_products WHERE id = ?", [id], (err) => {
+  db.query("DELETE FROM pet_food WHERE id = ?", [id], (err) => {
     if (err) {
       console.error('Error deleting pet food:', err.message);
       return res.status(500).send('Error deleting pet food');
