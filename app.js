@@ -437,17 +437,16 @@ app.get("/deletePet/:id", checkAuthenticated, checkAdmin, (req, res) => {
 app.get("/search", (req, res) => {
     const searchQuery = req.query.search || "";
     const sql = searchQuery 
-        ? "SELECT * FROM pets WHERE petName LIKE ?"
-        : "SELECT * FROM pets";
+        ? "SELECT * FROM pet_hotel WHERE pet_name LIKE ?"
+        : "SELECT * FROM pet_hotel";
     const params = searchQuery ? [`%${searchQuery}%`] : [];
     db.query(sql, params, (err, results) => {
         if (err) {
-            console.error("Error searching pets:", err.message);
-            return res.status(500).send("Error retrieving pets.");
+            console.error("Error searching pet:", err.message);
+            return res.status(500).send("Error retrieving pet");
         }
-        //if no pets found, render the page with empty results and pass a message
         res.render("index_d", {
-            pets: results,
+            pet: results,
             query: searchQuery,
             noResults: results.length === 0
         });
