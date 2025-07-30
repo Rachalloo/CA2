@@ -488,9 +488,9 @@ app.get('/medications/add', (req, res) => {
 
 // CREATE: Form submission
 app.post('/medications/add', (req, res) => {
-    const { name, dosage, expiration_date } = req.body;
-    const sql = 'INSERT INTO medications (name, dosage, expiration_date) VALUES (?, ?, ?)';
-    db.query(sql, [name, dosage, expiration_date], (err) => {
+    const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
+    const sql = 'INSERT INTO medications (medication_name, medication_dosage, medication_instructions, medication_licensed) VALUES (?, ?, ?, ?)';
+    db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication added!');
         res.redirect('/medications');
@@ -507,9 +507,9 @@ app.get('/medications/edit/:id', (req, res) => {
 
 // UPDATE: Edit form submission
 app.post('/medications/edit/:id', (req, res) => {
-    const { name, dosage, expiration_date } = req.body;
-    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
-    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+    const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
+    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
+    db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication updated!');
         res.redirect('/medications');
@@ -518,9 +518,9 @@ app.post('/medications/edit/:id', (req, res) => {
 
 // DELETE: Delete medication
 app.post('/medications/edit/:id', (req, res) => {
-    const { name, dosage, expiration_date } = req.body;
-    const sql = 'UPDATE medications SET name = ?, dosage = ?, expiration_date = ? WHERE id = ?';
-    db.query(sql, [name, dosage, expiration_date, req.params.id], (err) => {
+    const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
+    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
+    db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication updated!');
         res.redirect('/medications');
