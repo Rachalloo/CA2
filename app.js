@@ -517,10 +517,9 @@ app.post('/medications/edit/:id', (req, res) => {
 });
 
 // DELETE: Delete medication
-app.post('/medications/edit/:id', (req, res) => {
-    const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
-    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
-    db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
+app.post('/medications/delete/:id', (req, res) => {
+    const sql = 'DELETE FROM medications WHERE medication_id = ?';
+    db.query(sql, [req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication updated!');
         res.redirect('/medications');
