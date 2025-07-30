@@ -179,22 +179,21 @@ app.get('/submit_success', (req, res) => {
 
 app.post('/appt_form_create', (req, res) => {
   const {
-    appointmentType,
+    appointment,
     name,
     contact,
     email,
-    preferredDate,
-    preferredTime,
-    firsttimeCustomer,
-    petName,
+    date,
+    time,
+    firstTime,
+    pet_name,
     petBreed,
     petAge,
-    healthCondition,
+    petHealth,
     description
   } = req.body;
 
-  // Create a simple ID (e.g., current timestamp)
-  const groomingId = Date.now();
+  const groomingId = Date.now(); // simple unique ID
 
   const sql = `INSERT INTO grooming 
     (groomingId, appointmentType, name, contact, email, preferredDate, preferredTime, firsttimeCustomer, petName, petBreed, petAge, healthCondition, description)
@@ -202,17 +201,17 @@ app.post('/appt_form_create', (req, res) => {
 
   const values = [
     groomingId,
-    appointmentType,
+    appointment,      
     name,
     contact,
     email,
-    preferredDate,
-    preferredTime,
-    firsttimeCustomer,
-    petName,
+    date,
+    time,
+    firstTime,
+    pet_name,
     petBreed,
     petAge,
-    healthCondition,
+    petHealth,
     description
   ];
 
@@ -225,6 +224,15 @@ app.post('/appt_form_create', (req, res) => {
     res.redirect('/submit_success');
   });
 });
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting appointment:', err);
+      return res.send('Error occurred');
+    }
+
+    res.redirect('/submit_success');
+  });
 
 // Shopping cart routes
 app.get('/shop', (req, res) => {
