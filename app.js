@@ -703,8 +703,6 @@ app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => 
 });
 //Jeslyn part end
 
-//Xinyue part start
-
 // Show list of Pet Foods
 app.get('/petFoodList', (req, res) => {
     const sql = "SELECT * FROM pet_products WHERE type = 'Food'";
@@ -713,13 +711,13 @@ app.get('/petFoodList', (req, res) => {
             console.error("Error retrieving pet food list:", err);
             return res.status(500).send("Error getting food list.");
         }
-        res.render('foodList', { petFoods: results, messages: req.flash('success') });
+        res.render('foodList_x', { petFoods: results, messages: req.flash('success') });
     });
 });
 
 // Show form to add Pet Food
 app.get('/addPetFood', (req, res) => {
-    res.render('addFood');
+    res.render('addFood_x', { messages: req.flash('error') });
 });
 
 // Handle adding Pet Food
@@ -753,7 +751,7 @@ app.get('/editPetFood/:id', (req, res) => {
             req.flash('error', 'Pet food not found.');
             return res.redirect('/petFoodList');
         }
-        res.render('editFood', { food: results[0] });
+        res.render('editFood_x', { food: results[0], messages: req.flash('error') });
     });
 });
 
@@ -791,7 +789,7 @@ app.post('/deletePetFood/:id', (req, res) => {
     });
 });
 
-//Xinyue part end
+// Xinyue Part End
 
 // En Hui's Part.
 // HOME
