@@ -324,38 +324,55 @@ app.post("/addPet", upload.single("image"), (req, res) => {
 
 //edit pet
 app.get("/editPet/:id", (req, res) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.send(`
+            <h2 style="color:red;">Access denied. Admins only.</h2>
+            <p>Redirecting to login...</p>
+            <script>
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 3000);
+            </script>
+        `);
+    }
     const petId = req.params.id;
     const sql = "SELECT * FROM pets WHERE petId = ?";
-    //fetch data from mysql based on the pet id
     db.query(sql, [petId], (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
             return res.status(500).send("Error retrieving pet by ID.");
         }
-        //check if any pet with the given id was found
         if (results.length > 0) {
-            //render html page with the pet data 
-            res.render("editPet_d", {pets: results[0]});
+            res.render("editPet_d", { pets: results[0] });
         } else {
-            //if no pet with the given id was found, render a 404 page or handle it accordingly 
             res.status(404).send("Pet not found.");
         }
     });
 });
 app.post("/editPet/:id", upload.single("image"), (req, res) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.send(`
+            <h2 style="color:red;">Access denied. Admins only.</h2>
+            <p>Redirecting to login...</p>
+            <script>
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 3000);
+            </script>
+        `);
+    }
     const petId = req.params.id;
-    //extract pet data from the request body 
-    const {petName, startDate, endDate} = req.body;
-    let image = req.body.currentImage; //retrieve current image filename
-    if (req.file) { //if new image is uploaded
-        image = req.file.filename //set image to be new image filename
+    const { petName, startDate, endDate } = req.body;
+    let image = req.body.currentImage;
+
+    if (req.file) {
+        image = req.file.filename;
     }
     const sql = "UPDATE pets SET petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
-    //insert the new pet into the database
     db.query(sql, [petName, startDate, endDate, image, petId], (error, results) => {
         if (error) {
             console.error("Error updating pet:", error);
-            res.status(500).send("Error updating pet.");
+            return res.status(500).send("Error updating pet.");
         } else {
             res.redirect("/petDetails");
         }

@@ -25,9 +25,6 @@
                             <a class="nav-link" href="/addProg">Add Programme</a>
                         </li>
                     <% } %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Back</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -39,7 +36,7 @@
         </div>
 
         <div class="alert alert-info text-center mb-4">
-            To sign up for a programme, please call us at <strong>98765432</strong> or email us at
+            To sign up for programmes that you are interested, please call us at <strong>98765432</strong> or email us at
             <a href="mailto:petcouncil@gmail.com">petcouncil@gmail.com</a>
         </div>
 
@@ -47,6 +44,7 @@
             <% if (programmes && programmes.length > 0) { %>
                 <% programmes.forEach(programme => { %>
                     <div class="col-md-4 mb-4">
+                         <% const options = { year: 'numeric', month: 'short', day: 'numeric' }; %>
                         <div class="card h-100">
                             <% if (programme.image) { %>
                                 <img src="/Pictures/<%= programme.image %>" class="card-img-top" alt="Programme Image" />
@@ -54,8 +52,14 @@
                             <div class="card-body">
                                 <h5 class="card-title"><%= programme.name %></h5>
                                 <p><strong>Description:</strong><br /><%= programme.description %></p>
-                                <p><strong>Start Date:</strong><br /><%= programme.startDate %></p>
-                                <p><strong>End Date:</strong><br /><%= programme.endDate %></p>
+                            <p><strong>Start Date:</strong><br />
+                                <% const startDate=new Date(programme.startDate).toLocaleDateString('en-GB', options); %>
+                                <%= startDate %>
+                            </p>
+                            <p><strong>End Date:</strong><br />
+                                <% const endDate=new Date(programme.endDate).toLocaleDateString('en-GB', options); %>
+                                <%= endDate %>
+                            </p>
                                 <p><strong>Location:</strong><br /><%= programme.location %></p>
                             </div>
                             <% if (user && user.role === 'admin') { %>
@@ -73,6 +77,12 @@
             <% } %>
         </div>
     </div>
+    <div class="text-center mt-4">
+    <a href="/Home">Back</a>
+    </div>
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>&copy; 2025 Pet Council. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>
