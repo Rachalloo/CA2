@@ -383,13 +383,13 @@ app.get("/search", (req, res) => {
 app.get('/appointments', (req, res) => {
     db.query('SELECT * FROM appointments', (err, results) => {
         if (err) throw err;
-        res.render('appointments', { appointments: results, messages: req.flash('success') });
+        res.render('appt_list_S', { appointments: results, messages: req.flash('success') });
     });
 });
 
 // CREATE: Form to Add appointment
 app.get('/appointments/add', (req, res) => {
-    res.render('add_appointment');
+    res.render('appt_add_S');
 });
 
 // CREATE: Form submission
@@ -407,7 +407,7 @@ app.post('/appointments/add', (req, res) => {
 app.get('/appointments/edit/:id', (req, res) => {
     db.query('SELECT * FROM appointments WHERE id = ?', [req.params.id], (err, results) => {
         if (err) throw err;
-        res.render('edit_appointment', { appointment: results[0] });
+        res.render('appt_edit_S', { appointment: results[0] });
     });
 });
 
@@ -438,13 +438,13 @@ app.get('/appointments/delete/:id', (req, res) => {
 app.get('/medications', (req, res) => {
     db.query('SELECT * FROM medications', (err, results) => {
         if (err) throw err;
-        res.render('medications', { medications: results, messages: req.flash('success') });
+        res.render('med_list_S', { medications: results, messages: req.flash('success') });
     });
 });
 
 // CREATE: Form to add medication
 app.get('/medications/add', (req, res) => {
-    res.render('add_medication');
+    res.render('med_add_S');
 });
 
 // CREATE: Form submission
@@ -462,7 +462,7 @@ app.post('/medications/add', (req, res) => {
 app.get('/medications/edit/:id', (req, res) => {
     db.query('SELECT * FROM medications WHERE id = ?', [req.params.id], (err, results) => {
         if (err) throw err;
-        res.render('edit_medication', { medication: results[0] });
+        res.render('med_edit_S', { medication: results[0] });
     });
 });
 
