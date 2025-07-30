@@ -104,9 +104,9 @@ const validateRegistration = (req, res, next) => {
 };
 
 app.post('/register', validateRegistration, (req, res) => {
-    const { user_id, username, email, password, address, contact, role } = req.body;
-    const sql = 'INSERT INTO user ( user_id, username, email, password, address, contact, role) VALUES (?, ?, ?, SHA1(?), ?, ?, ?)';
-    db.query(sql, [user_id, username, email, password, address, contact, role], (err, result) => {
+    const { username, email, password, address, contact, role } = req.body;
+    const sql = 'INSERT INTO user ( username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+    db.query(sql, [username, email, password, address, contact, role], (err, result) => {
         if (err) throw err;
         req.flash('success', 'Registration successful! Please log in.');
         res.redirect('/login');
@@ -162,10 +162,10 @@ app.get('/grooming', (req, res) => {
 });
 
 app.get('/appt_from_create', (req, res) => {
-    res.render('appt_from_create_SRDE');
+    res.render('appt_from_create_SRD');
 });
 
-app.post('/appt_from_create_SRDE', (req, res) => {
+app.post('/appt_from_create', (req, res) => {
     console.log(req.body);
     res.send('Appointment submitted successfully!');
 });
