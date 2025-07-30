@@ -34,7 +34,7 @@ db.connect((err) => {
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
-app.use('/Pictures', express.static('Pictures'));
+app.use('/pictures', express.static('Pictures'));
 
 app.use(session({
     secret: 'secret',
