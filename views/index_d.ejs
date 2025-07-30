@@ -13,6 +13,15 @@
 
   <%- include ('header_R.ejs') %>
 
+<form action="/search" method="GET">
+    <input type="text" name="search" placeholder="Search by pet name" value="<%= query || '' %>" />
+    <button type="submit">Search</button>
+</form>
+
+  <% if (noResults) { %>
+    <p style="color: red;">No pets found for "<%= query %>"</p>
+<% } %>
+
   <% if (pets.length > 0) { %>
       <ul>
         <% pets.forEach(pet=> { %>

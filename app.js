@@ -376,12 +376,20 @@ app.get("/search", (req, res) => {
     const sql = searchQuery 
         ? "SELECT * FROM pets WHERE petName LIKE ?"
         : "SELECT * FROM pets";
-    
+
     const params = searchQuery ? [`%${searchQuery}%`] : [];
 
     db.query(sql, params, (err, results) => {
-        if (err) throw err;
-        res.render("index_d", { pets: results, query: searchQuery });
+        if (err) {
+            console.error("Error searching pets:", err.message);
+            return res.status(500).send("Error retrieving pets.");
+        }
+        //if no pets found, render the page with empty results and pass a message
+        res.render("index_d", {
+            pets: results,
+            query: searchQuery,
+            noResults: results.length === 0
+        });
     });
 });
 //doris part end
