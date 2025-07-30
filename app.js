@@ -34,7 +34,7 @@ db.connect((err) => {
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
-app.use('/Pictures', express.static('Pictures'));
+app.use('/pictures', express.static('Pictures'));
 
 app.use(session({
     secret: 'secret',
@@ -499,7 +499,7 @@ app.post('/medications/add', (req, res) => {
 
 // UPDATE: Edit form
 app.get('/medications/edit/:id', (req, res) => {
-    db.query('SELECT * FROM medications WHERE id = ?', [req.params.id], (err, results) => {
+    db.query('SELECT * FROM medications WHERE medication_id = ?', [req.params.id], (err, results) => {
         if (err) throw err;
         res.render('med_edit_S', { medication: results[0] });
     });
@@ -508,7 +508,7 @@ app.get('/medications/edit/:id', (req, res) => {
 // UPDATE: Edit form submission
 app.post('/medications/edit/:id', (req, res) => {
     const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
-    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
+    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE medication_id = ?';
     db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication updated!');
@@ -517,12 +517,11 @@ app.post('/medications/edit/:id', (req, res) => {
 });
 
 // DELETE: Delete medication
-app.post('/medications/edit/:id', (req, res) => {
-    const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
-    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
-    db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
+app.post('/medications/delete/:id', (req, res) => {
+    const sql = 'DELETE FROM medications WHERE medication_id = ?';
+    db.query(sql, [req.params.id], (err) => {
         if (err) throw err;
-        req.flash('success', 'Medication updated!');
+        req.flash('success', 'Medication deleted!');
         res.redirect('/medications');
     });
 });
@@ -730,7 +729,7 @@ app.post('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) =>
 
 //Jeslyn part end
 
-// xinyue part end
+// xinyue part start
 
 // List all Pet Food items
 app.get('/petFoodList', (req, res) => {
@@ -746,25 +745,20 @@ app.get('/petFoodList', (req, res) => {
   });
 });
 
-// OPTIONAL: View a single pet food item by id
-app.get('/petFood/:id', (req, res) => {
-  const id = req.params.id;
-  db.query("SELECT * FROM pet_food WHERE id = ?", [id], (err, results) => {
-    if (err) {
-      console.error('Database query error:', err.message);
-      return res.status(500).send('Error retrieving pet food by ID');
-    }
-    if (results.length > 0) {
-      res.render('foodList_x', { petFoods: [results[0]], user: req.session.user });
-    } else {
-      res.status(404).send('Pet food not found');
-    }
-  });
-});
 
 // Show form to add Pet Food
-app.get('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
-  res.render('addFood_x', { user: req.session.user, messages: [] });
+app.get('/addPetFood', (req, res) => {
+    const sql = "SELECT * FROM pet_food";
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error fetching pet foods:", err);
+            return res.status(500).send("Error retrieving food list.");
+        }
+        res.render('addFood_x', {
+            petFoods: results,
+            user: req.session.user
+        });
+    });
 });
 
 // Handle adding Pet Food
@@ -777,12 +771,12 @@ app.post('/addPetFood', checkAuthenticated, checkAdmin, upload.single('image'), 
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
   db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image], (err) => {
-    if (err) {
-      console.error('Error adding pet food:', err.message);
-      return res.status(500).send('Error adding pet food');
-    }
-    res.redirect('/petFoodList');
-  });
+  if (err) {
+    console.error('Error adding pet food:', err);  
+    return res.status(500).send('Error adding pet food: ' + err.message);
+  }
+  res.redirect('/petFoodList');
+});
 });
 
 // Show form to edit Pet Food

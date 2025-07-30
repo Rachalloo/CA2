@@ -23,12 +23,12 @@
             <% medications.forEach(medication => { %>
                 <tr>
                     <td><%= medication.medication_name %></td>
-                    <td><%= medication.dosage %></td>
-                    <td><%= medication.instructions %></td>
-                    <td><%= medication.licensed %></td>
+                    <td><%= medication.medication_dosage %></td>
+                    <td><%= medication.medication_instructions %></td>
+                    <td><%= medication.medication_licensed %></td>
                     <td>
-                        <a href="/medications/edit/<%= medication.id %>" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="/medications/delete/<%= medication.id %>" method="POST" style="display:inline;">
+                        <a href="/medications/edit/<%= medication.medication_id %>" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="/medications/delete/<%= medication.medication_id %>" method="POST" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </td>

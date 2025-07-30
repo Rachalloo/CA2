@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pet Food List</title>
+  <title>Add Pet Food</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -13,62 +13,55 @@
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
         <% if (user) { %>
-          <li class="nav-item"><a class="nav-link" href="/addPetFood">+ Add Pet Food</a></li>
+          <li class="nav-item"><a class="nav-link" href="/petFoodList">Pet Food List</a></li>
         <% } %>
       </ul>
     </div>
   </nav>
 
   <div class="container mt-5">
-    <h2 class="text-center mb-4">Pet Food List</h2>
-    <table class="table table-bordered table-hover text-center align-middle">
-      <thead class="table-dark">
-        <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Brand</th>
-          <th>Description</th>
-          <th>Price ($)</th>
-          <th>Quantity</th>
-          <th>Image</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (petFoods.length > 0) { %>
-          <% petFoods.forEach(food => { %>
-            <tr>
-              <td><%= food.food_name %></td>
-              <td><%= food.food_category %></td>
-              <td><%= food.food_brand %></td>
-              <td><%= food.food_description %></td>
-              <td><%= food.food_price ? Number(food.food_price).toFixed(2) : '0.00' %></td>
-              <td><%= food.food_quantity %></td>
-              <td>
-                <% if (food.image) { %>
-                  <img src="/Pictures/<%= food.image %>" alt="<%= food.food_name || 'Pet Food' %> Image" class="img-fluid rounded" style="max-width: 100px;">
-                <% } else { %>
-                  No image
-                <% } %>
-              </td>
-              <td>
-                <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
-                <a href="/deletePetFood/<%= food.id %>" class="btn btn-sm btn-danger"
-                   onclick="return confirm('Are you sure you want to delete \"<%= food.food_name %>\"?');">Delete</a>
-              </td>  
-            </tr>
-          <% }) %>
-        <% } else { %>
-          <tr>
-            <td colspan="8">No pet food items found.</td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <h2 class="text-center mb-4">Add New Pet Food</h2>
+    <form action="/addPetFood" method="POST" enctype="multipart/form-data" class="row g-3">
+      <div class="col-md-6">
+        <label for="food_name" class="form-label">Food Name</label>
+        <input type="text" class="form-control" id="food_name" name="food_name" required>
+      </div>
 
-    <div class="text-center mt-4 mb-5">
-      <a href="/Home" class="btn btn-secondary">Back to Home</a>
-    </div>
+      <div class="col-md-6">
+        <label for="food_category" class="form-label">Category</label>
+        <input type="text" class="form-control" id="food_category" name="food_category" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="food_brand" class="form-label">Brand</label>
+        <input type="text" class="form-control" id="food_brand" name="food_brand" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="food_price" class="form-label">Price</label>
+        <input type="number" step="0.01" class="form-control" id="food_price" name="food_price" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="food_quantity" class="form-label">Quantity</label>
+        <input type="number" class="form-control" id="food_quantity" name="food_quantity" required>
+      </div>
+
+      <div class="col-md-12">
+        <label for="food_description" class="form-label">Description</label>
+        <textarea class="form-control" id="food_description" name="food_description" rows="3"></textarea>
+      </div>
+
+      <div class="col-md-12">
+        <label for="image" class="form-label">Image</label>
+        <input type="file" class="form-control" id="image" name="image">
+      </div>
+
+      <div class="col-12 text-center">
+        <button type="submit" class="btn btn-success">Add Pet Food</button>
+        <a href="/petFoodList" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
   </div>
 </body>
 </html>
