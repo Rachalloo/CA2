@@ -23,7 +23,7 @@
 
     <div class="container mt-5">
         <h2 class="text-center mb-4">Edit Programme</h2>
-        <form action="/programme/edit/<%= programme.id %>" method="POST" enctype="multipart/form-data"
+        <form action="/editProg/<%= programme.id %>" method="POST" enctype="multipart/form-data"
             class="mx-auto">
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
@@ -47,14 +47,15 @@
             </div>
             <div class="mb-3">
                 <label for="image">Current Image:</label><br>
-                <input type="'text" name="currentImage" value=<%=programme.image%>readonly><br>
-                <img src="/images/<%= programme.image %>" width="40%"><br><br>
+                <input type="text" name="currentImage" value="<%= programme.image %>" readonly><br>
+                <img src="/Pictures/<%= programme.image %>" width="40%"><br><br>
 
                 New Image: <br><input type="file" id="image" name="image" accept="image/*" value=<%=programme.image%>><br><br>
             </div>
             <div class="text-center">
-        <button type="submit" class="btn btn-primary">Edit Programme</button>
-        <a href="/programme_j" class="btn btn-secondary ms-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Edit Programme</button>
+                <a href="/programme_j" class="btn btn-secondary ms-2">Cancel</a>
+            </div>
         </form>
     </div>
 
