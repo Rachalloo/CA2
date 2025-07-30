@@ -841,7 +841,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
         'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('userSchedule_E', { requests: results });
+            res.render('userSchedule_E', { requests: results, user: req.session.user });
         }
     );
 });
@@ -924,7 +924,7 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         'SELECT * FROM appointments',
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('adminSchedule_E', { requests: results });
+            res.render('adminSchedule_E', { requests: results, user: req.session.user});
         }
     );
 });
