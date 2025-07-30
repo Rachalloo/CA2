@@ -916,7 +916,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
         return res.status(500).send("Error fetching vet data.");
       }
 
-    db.query(pet_hotelQuery, [userId], (err3, groomingResults) => {
+    db.query(pet_hotelQuery, [userId], (err3, pet_hotelResults) => {
         if (err3) {
           console.error("Error fetching pet hotel appointments:", err3);
           return res.status(500).send("Error fetching pet hotel data.");
