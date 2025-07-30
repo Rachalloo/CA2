@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +7,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <title>Pet Hotel</title>
 </head>
-
 <body>
-
+  
   <div class="container">
     <br>
     <div class="text-center">
@@ -18,37 +16,33 @@
     </div>
     <br>
     <div class="text-center">
-      <% if (pets) { %>
-        <form action="/editPet/<%= pets.petId %>" method="POST" enctype="multipart/form-data">
-          <label for="user">User Name:</label><br>
-          <input type="text" id="user" name="user" value="<%= pets.user %>" required><br><br>
+      <% if (pet) { %>
+        <form action="/editPet/<%= pet.id %>" method="POST" enctype="multipart/form-data">
+          <label for="customer_name">Customer Name:</label><br>
+          <input type="text" id="customer_name" name="customer_name" value="<%= pet.customer_name %>" required><br><br>
 
-          <label for="pet">Pet Name:</label><br>
-          <input type="text" id="pet" name="pet" value="<%= pets.petName %>" required><br><br>
+          <label for="pet_name">Pet Name:</label><br>
+          <input type="text" id="pet_name" name="pet_name" value="<%= pet.pet_name %>" required><br><br>
 
-          <label for="startdate">Start Date:</label><br>
-          <input type="date" id="startdate" name="startdate" value=<%=pets.startDate %> required><br><br>
+          <label for="start_date">Start Date:</label><br>
+          <input type="date" id="start_date" name="start_date" value=<%=pet.start_date %> required><br><br>
 
-          <label for="enddate">End Date:</label><br>
-          <input type="date" id="enddate" name="enddate" value=<%=pets.endDate %> required><br><br>
+          <label for="end_date">End Date:</label><br>
+          <input type="date" id="end_date" name="end_date" value=<%=pet.end_date %> required><br><br>
 
           <label for="image">Current Image:</label><br>
-          <input type="text" name="currentImage" value=<%=pets.image%> readonly><br>
-          <img src="/images/<%= pets.image %>" width="20%"><br><br>
+          <input type="text" name="currentImage" value=<%=pet.image%> readonly><br><br>
+          <img src="/images/<%= pet.image %>" width="20%"><br><br>
 
-          New Image:<br> <input type="file" id="image" name="image" accept="image/*" value=<%=pets.image %>><br><br>
+          New Image:<br> <input type="file" id="image" name="image" accept="image/*" value=<%=pet.image %>><br><br>
 
           <button type="submit">Update Pet</button>
         </form>
         <% } else { %>
-          <p>No pet found.</p>
+          <p>No pet found</p>
           <% } %>
-            <a href="/petDetails">Back</a>
+            <a href="/petHotel">Back</a>
     </div>
   </div>
-
-<%- include ('footer_R') %>
-
 </body>
-
 </html>
