@@ -155,10 +155,6 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.get('/dashboard', checkAuthenticated, (req, res) => {
-    res.render('dashboard_R', { user: req.session.user });
-});
-
 app.get('/admin', checkAuthenticated, checkAdmin, (req, res) => {
     res.render('admin_R', { user: req.session.user });
 });
