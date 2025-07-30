@@ -261,73 +261,7 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
   });
 });
 
-app.post('/appt_form_create', (req, res) => {
-  const {
-    appointmentId,
-    username,
-    contact,
-    email,
-    date,
-    time,
-    firstTime,
-    petName,
-    petBreed,
-    petAge,
-    petHealth,
-    description
-  } = req.body;
 
-  // 1. Get the latest ID
-  const getIdSql = "SELECT id FROM appointment ORDER BY id DESC LIMIT 1";
-
-  db.query(getIdSql, (err, result) => {
-    if (err) throw err;
-
-    let newId = "A001"; // default if table is empty
-
-    if (result.length > 0) {
-      const lastId = result[0].id; // e.g. A004
-      const num = parseInt(lastId.substring(1)); // remove "A" → 4
-      const nextNum = num + 1;
-      newId = "A" + String(nextNum).padStart(3, "0"); // A005
-    }
-
-    const insertSql = `INSERT INTO appointment (
-      id,
-      appointment_type,
-      name,
-      contact,
-      email,
-      preferred_date,
-      time_slot,
-      first_time_customer,
-      pet_name,
-      pet_breed,
-      pet_age,
-      pet_health,
-      description
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-    db.query(insertSql, [
-      newId,
-      appointment,
-      name,
-      contact,
-      email,
-      date,
-      time,
-      firstTime,
-      petName,
-      petBreed,
-      petAge,
-      petHealth,
-      description
-    ], (err2, result2) => {
-      if (err2) throw err2;
-      res.send("Appointment submitted with ID: " + newId);
-    });
-  });
-});
 // Rachel's part end
 
 //doris part start
