@@ -256,8 +256,15 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
 //define routes
 app.get("/petDetails", (req, res) => {
     if (!req.session.user || req.session.user.role !== "admin") {
-        return res.status(403).send("Access denied. Admins only.");
-        res.redirect("/login");
+         return res.send(`
+            <h2 style="color:red;">Access denied. Admins only.</h2>
+            <p>You will be redirected to the login page in 3 seconds...</p>
+            <script>
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 3000);
+            </script>
+        `);
     }
     const sql = "SELECT * FROM pets";
     db.query(sql, (error, results) => {
@@ -293,26 +300,23 @@ app.get("/pet/:id", (req, res) => {
 
 //add pet 
 app.get("/addPet", (req, res) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.status(403).send("Access denied. Admins only.");
+    }
     res.render("addPet_d");
 });
 app.post("/addPet", upload.single("image"), (req, res) => {
-    //extract pet data from the request body 
-    const {petName, startDate, endDate} = req.body;
-    let image;
-    if (req.file) {
-        image = req.file.filename; //save only the filename
-    } else {
-        image = null;
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.status(403).send("Access denied. Admins only.");
     }
+    const { petName, startDate, endDate } = req.body;
+    let image = req.file ? req.file.filename : null;
     const sql = "INSERT INTO pets (petName, startDate, endDate, image) VALUES (?, ?, ?, ?)";
-    //insert the new pet into the database
     db.query(sql, [petName, startDate, endDate, image], (error, results) => {
         if (error) {
-            //handle any error that occurs during the database operation
             console.error("Error adding pet:", error);
-            res.status(500).send("Error adding pet.");
+            return res.status(500).send("Error adding pet.");
         } else {
-            //send a success response
             res.redirect("/petDetails");
         }
     });
