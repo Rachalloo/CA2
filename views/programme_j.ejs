@@ -13,7 +13,7 @@
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Pet Council Pharmacy</a>
+            <a class="navbar-brand" href="/">Pet Council</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -44,22 +44,19 @@
             <% if (programmes && programmes.length > 0) { %>
                 <% programmes.forEach(programme => { %>
                     <div class="col-md-4 mb-4">
-                         <% const options = { year: 'numeric', month: 'short', day: 'numeric' }; %>
                         <div class="card h-100">
-                            <% if (programme.image) { %>
-                                <img src="/Pictures/<%= programme.image %>" class="card-img-top" alt="Programme Image" />
-                            <% } %>
+                            <img src="/images/<%= programme.image %>"class="card-img-top img-fluid" style="height: 450px; object-fit: cover;" alt="Programme Image">
                             <div class="card-body">
                                 <h5 class="card-title"><%= programme.name %></h5>
                                 <p><strong>Description:</strong><br /><%= programme.description %></p>
-                            <p><strong>Start Date:</strong><br />
-                                <% const startDate=new Date(programme.startDate).toLocaleDateString('en-GB', options); %>
-                                <%= startDate %>
-                            </p>
-                            <p><strong>End Date:</strong><br />
-                                <% const endDate=new Date(programme.endDate).toLocaleDateString('en-GB', options); %>
-                                <%= endDate %>
-                            </p>
+                                <p><strong>Start Date:</strong><br>
+                                <%= new Date(programme.startDate).toLocaleDateString('en-SG', 
+                                {day: 'numeric', month: 'short', year: 'numeric',timeZone: 'Asia/Singapore'}) %>
+                                </p>
+                                <p><strong>End Date:</strong><br>
+                                <%= new Date(programme.endDate).toLocaleDateString('en-SG', 
+                                {day: 'numeric', month: 'short', year: 'numeric',timeZone: 'Asia/Singapore'}) %>
+                                </p>
                                 <p><strong>Location:</strong><br /><%= programme.location %></p>
                             </div>
                             <% if (user && user.role === 'admin') { %>
@@ -78,7 +75,7 @@
         </div>
     </div>
     <div class="text-center mt-4">
-    <a href="/Home">Back</a>
+    <a href="/frontPage">Back</a>
     </div>
     <footer class="bg-dark text-white text-center py-3 mt-5">
         <p>&copy; 2025 Pet Council. All rights reserved.</p>
