@@ -383,13 +383,13 @@ app.get("/search", (req, res) => {
 app.get('/appointments', (req, res) => {
     db.query('SELECT * FROM appointments', (err, results) => {
         if (err) throw err;
-        res.render('appt_list_S', { appointments: results, messages: req.flash('success') });
+        res.render('appt_list_S', { appointments: results, messages: req.flash('success'), user: req.session.user });
     });
 });
 
 // CREATE: Form to Add appointment
 app.get('/appointments/add', (req, res) => {
-    res.render('appt_add_S');
+    res.render('appt_add_S', user: req.session.user);
 });
 
 // CREATE: Form submission
@@ -407,7 +407,7 @@ app.post('/appointments/add', (req, res) => {
 app.get('/appointments/edit/:id', (req, res) => {
     db.query('SELECT * FROM appointments WHERE id = ?', [req.params.id], (err, results) => {
         if (err) throw err;
-        res.render('appt_edit_S', { appointment: results[0] });
+        res.render('appt_edit_S', { appointment: results[0] }, user: req.session.user);
     });
 });
 
