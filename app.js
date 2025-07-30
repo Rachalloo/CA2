@@ -175,7 +175,7 @@ app.get('/appt_form_create', (req, res) => {
 
 app.post('/appt_form_create', (req, res) => {
     console.log(req.body);
-    res.send('Appointment submitted successfully!');
+    res.render('submit_sucess_SRD');
 });
 
 // Shopping cart routes
