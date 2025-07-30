@@ -309,10 +309,10 @@ app.post("/addPet", upload.single("image"), (req, res) => {
     if (!req.session.user || req.session.user.role !== "admin") {
         return res.status(403).send("Access denied. Admins only.");
     }
-    const { petName, startDate, endDate } = req.body;
+    const { user, petName, startDate, endDate } = req.body;
     let image = req.file ? req.file.filename : null;
-    const sql = "INSERT INTO pets (petName, startDate, endDate, image) VALUES (?, ?, ?, ?)";
-    db.query(sql, [petName, startDate, endDate, image], (error, results) => {
+    const sql = "INSERT INTO pets (user, petName, startDate, endDate, image) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [user, petName, startDate, endDate, image], (error, results) => {
         if (error) {
             console.error("Error adding pet:", error);
             return res.status(500).send("Error adding pet.");
@@ -362,14 +362,14 @@ app.post("/editPet/:id", upload.single("image"), (req, res) => {
         `);
     }
     const petId = req.params.id;
-    const { petName, startDate, endDate } = req.body;
+    const {user, petName, startDate, endDate } = req.body;
     let image = req.body.currentImage;
 
     if (req.file) {
         image = req.file.filename;
     }
-    const sql = "UPDATE pets SET petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
-    db.query(sql, [petName, startDate, endDate, image, petId], (error, results) => {
+    const sql = "UPDATE pets SET user = ?, petName = ?, startDate = ?, endDate = ?, image = ? WHERE petId = ?";
+    db.query(sql, [user, petName, startDate, endDate, image, petId], (error, results) => {
         if (error) {
             console.error("Error updating pet:", error);
             return res.status(500).send("Error updating pet.");
@@ -764,7 +764,7 @@ app.get('/petFood/:id', (req, res) => {
 
 // Show form to add Pet Food
 app.get('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
-  res.render('addFood_x', { user: req.session.user });
+  res.render('addFood_x', { user: req.session.user, messages: [] });
 });
 
 // Handle adding Pet Food

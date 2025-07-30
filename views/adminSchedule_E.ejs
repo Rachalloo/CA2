@@ -31,8 +31,9 @@
                 <%= appointment.appointmentDate %>
               </h6>
               <a href="/admin_schedule_review-reschedule/<%= appointment.appointmentId %>" class="card-link">Approve & Update</a>
-              <a href="/admin_schedule_deleteSchedule/<%= appointment.appointmentId %>" class="card-link"
-                onclick="return confirm('Are you sure you want to delete this schedule item?')">Delete</a>
+              <form action="/admin_schedule_deleteSchedule/<%= appointment.appointmentId %>" method="POST"
+                onsubmit="return confirm('Confirm delete?')">
+                <button type="submit" class="btn btn-link p-0">Request for Delete</button>
             </div>
           </div>
         </div>
