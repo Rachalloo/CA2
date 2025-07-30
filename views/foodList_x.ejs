@@ -46,12 +46,14 @@
               <td><%= food.food_quantity %></td>
               <td>
               <td>
+              <td>
                 <% if (food.image) { %>
-                <img src="/pictures/<%= food.image %>" alt="Pet Food Image" class="img-fluid rounded" style="max-width: 100px;">
-                <% } else { %>
-                No image
-              <% } %>
+                  <img src="/images/<%= food.image %>" alt="Pet Food Image" class="img-fluid rounded" style="max-width: 100px;">
+                  <% } else { %>
+                  No image
+                <% } %>
               </td>
+
               <td>
                 <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
                 <a href="/deletePetFood/<%= food.id %>" class="btn btn-sm btn-danger"
