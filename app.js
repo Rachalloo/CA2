@@ -222,6 +222,10 @@ app.post('/appt_form_create', (req, res) => {
   });
 });
 
+app.get('/submit_success', (req, res) => {
+  res.render('submit_success'); // Create a submit_success.ejs to show confirmation
+});
+
 // Shopping cart routes
 app.get('/shop', (req, res) => {
     res.render('shop_R', { products, user: req.session.user, messages: req.flash('success') });
