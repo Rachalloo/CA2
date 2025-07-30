@@ -19,22 +19,22 @@
     </div>
     <br>
     <div class="text-center">
-      <% if (pet) { %>
-        <form action="/editPet/<%= pet.petId %>" method="POST" enctype="multipart/form-data">
+      <% if (pets) { %>
+        <form action="/editPet/<%= pets.petId %>" method="POST" enctype="multipart/form-data">
           <label for="name">Pet Name:</label><br>
-          <input type="text" id="name" name="name" value="<%= pet.petName %>" required><br><br>
+          <input type="text" id="name" name="name" value="<%= pets.petName %>" required><br><br>
 
           <label for="startdate">Start Date:</label><br>
-          <input type="date" id="startdate" name="startdate" value=<%=pet.startDate %> required><br><br>
+          <input type="date" id="startdate" name="startdate" value=<%=pets.startDate %> required><br><br>
 
           <label for="enddate">End Date:</label><br>
-          <input type="date" id="enddate" name="enddate" value=<%=pet.endDate %> required><br><br>
+          <input type="date" id="enddate" name="enddate" value=<%=pets.endDate %> required><br><br>
 
           <label for="image">Current Image:</label><br>
-          <input type="text" name="currentImage" value=<%=pet.image%> readonly><br>
-          <img src="/images/<%= pet.image %>" width="20%"><br><br>
+          <input type="text" name="currentImage" value=<%=pets.image%> readonly><br>
+          <img src="/images/<%= pets.image %>" width="20%"><br><br>
 
-          New Image:<br> <input type="file" id="image" name="image" accept="image/*" value=<%=pet.image %>><br><br>
+          New Image:<br> <input type="file" id="image" name="image" accept="image/*" value=<%=pets.image %>><br><br>
 
           <button type="submit">Update Pet</button>
         </form>
