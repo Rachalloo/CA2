@@ -899,7 +899,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
     WHERE user_id = ?`;
 
   // Pet hotel bookings by this user
-  const hotelQuery = `
+  const pet_hotelQuery = `
     SELECT id, "Pet Hotel" AS type, pet_name AS title, start_date AS appointmentDate, NULL AS time, NULL AS petName, NULL AS petBreed 
     FROM pet_hotel 
     WHERE user_id = ?`;
@@ -915,7 +915,13 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
         console.error("Error fetching vet appointments:", err2);
         return res.status(500).send("Error fetching vet data.")
 
-        const allAppointments = [...groomingResults, ...vetResults];
+    db.query(pet_hotelQuery, [userId], (err3, groomingResults) => {
+    if (err3) {
+      console.error("Error fetching pet hotel appointments:", err3);
+      return res.status(500).send("Error fetching pet hotel data.");
+    }
+
+        const allAppointments = [...groomingResults, ...vetResults, ...pet_hotelResults];
         allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
 
         res.render('userSchedule_E', {
