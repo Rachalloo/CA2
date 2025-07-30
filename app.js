@@ -831,7 +831,7 @@ app.get('/deletePetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
 
 // En Hui's Part.
 // HOME
-app.get('/home', checkAuthenticated, (req, res) => {
+app.get('/Home', checkAuthenticated, (req, res) => {
     res.render('frontPage', { user: req.session.user });
 });
 
