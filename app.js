@@ -730,12 +730,7 @@ app.get('/deletePartnership/:id', (req, res) => {
 //Xinyue part start
 // Show form to add Pet Food
 app.get('/pet-products/add/food', (req, res) => {
-    res.render('addFood');
-});
-
-// Show form to add Medication
-app.get('/pet-products/add/medication', (req, res) => {
-    res.render('addMedication');
+    res.render('addFood_x');
 });
 
 // Handle adding Pet Food
@@ -762,45 +757,23 @@ app.post('/pet-products/add/medication', (req, res) => {
 app.get('/pet-products/edit/food/:id', (req, res) => {
     db.query("SELECT * FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], (err, results) => {
         if (err || results.length === 0) return res.status(404).send("Food not found.");
-        res.render('editProduct', { product: results[0] });
+        res.render('editFood', { product: results[0] });
     });
 });
 app.post('/pet-products/edit/food/:id', (req, res) => {
     const { name, price } = req.body;
     db.query("UPDATE pet_products SET name = ?, price = ? WHERE id = ? AND type = 'Food'", [name, price, req.params.id], err => {
         if (err) return res.status(500).send("Error updating food.");
-        res.redirect('/pet-products');
+        res.redirect('/pet-food');
     });
 });
-
-//Edit Medication
-app.get('/pet-products/edit/medication/:id', (req, res) => {
-    db.query("SELECT * FROM pet_products WHERE id = ? AND type = 'Medication'", [req.params.id], (err, results) => {
-        if (err || results.length === 0) return res.status(404).send("Medication not found.");
-        res.render('editProduct', { product: results[0] });
-    });
-});
-app.post('/pet-products/edit/medication/:id', (req, res) => {
-    const { name, price } = req.body;
-    db.query("UPDATE pet_products SET name = ?, price = ? WHERE id = ? AND type = 'Medication'", [name, price, req.params.id], err => {
-        if (err) return res.status(500).send("Error updating medication.");
-        res.redirect('/pet-products');
-    });
-});
+;
 
 
 //Delete Pet Food
 app.post('/pet-products/delete/food/:id', (req, res) => {
     db.query("DELETE FROM pet_products WHERE id = ? AND type = 'Food'", [req.params.id], err => {
         if (err) return res.status(500).send("Error deleting food.");
-        res.redirect('/pet-products');
-    });
-});
-
-//Delete Medication
-app.post('/pet-products/delete/medication/:id', (req, res) => {
-    db.query("DELETE FROM pet_products WHERE id = ? AND type = 'Medication'", [req.params.id], err => {
-        if (err) return res.status(500).send("Error deleting medication.");
         res.redirect('/pet-products');
     });
 });
