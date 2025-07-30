@@ -922,7 +922,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
           appointments: allAppointments,
           user: req.session.user
         });
-      });
+      }
     });
   });
 
