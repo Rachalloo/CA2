@@ -21,7 +21,7 @@
 
   <div class="container mt-5">
     <h2 class="text-center mb-4">Add New Pet Food</h2>
-    <form action="/addPetFood" method="POST" enctype="multipart/form-data" class="row g-3">
+    <form action="/addPetFood" method="POST" class="row g-3">
       <div class="col-md-6">
         <label for="food_name" class="form-label">Food Name</label>
         <input type="text" class="form-control" id="food_name" name="food_name" required>
@@ -51,12 +51,6 @@
         <label for="food_description" class="form-label">Description</label>
         <textarea class="form-control" id="food_description" name="food_description" rows="3"></textarea>
       </div>
-
-    <div class="col-md-12">
-      <label for="image" class="form-label">Upload JPG Image</label>
-      <input type="file" class="form-control" id="image" name="image" accept=".jpg,.jpeg">
-      <div class="form-text">Only JPG files are allowed. Must end with .jpg or .jpeg</div>
-    </div>
 
       <div class="col-12 text-center">
         <button type="submit" class="btn btn-success">Add Pet Food</button>
