@@ -50,11 +50,11 @@
                   No image
                 <% } %>
               </td>
-              <td>
+                <td>
                 <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
                 <a href="/deletePetFood/<%= food.id %>" class="btn btn-sm btn-danger"
-                   onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
-              </td>
+                onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+            </td>  
             </tr>
           <% }) %>
         <% } else { %>
