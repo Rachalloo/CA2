@@ -925,7 +925,6 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
       });
     });
   });
-});
 
 app.post('/user_schedule/:id', checkAuthenticated, (req, res) => {
   const appointmentId = parseInt(req.params.id);
