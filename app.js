@@ -82,7 +82,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register', {
+    res.render('register_R', {
         messages: req.flash('error'),
         formData: req.flash('formData')[0]
     });
@@ -144,7 +144,7 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/dashboard', checkAuthenticated, (req, res) => {
-    res.render('dashboard', { user: req.session.user });
+    res.render('dashboard_R', { user: req.session.user });
 });
 
 app.get('/admin', checkAuthenticated, checkAdmin, (req, res) => {
