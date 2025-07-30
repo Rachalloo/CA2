@@ -7,8 +7,7 @@
   <h1>Welcome to Pet Council Website</h1>
 
   <% if (user) { %>
-    <p>Hello, <%= user.username %>!</p>
-    <a href="/dashboard">Dashboard</a> | 
+    <p>Hello, <%= user.username %>!</p>| 
     <a href="/logout">Logout</a>
   <% } else { %>
     <a href="/register">Register</a> | 
