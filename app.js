@@ -229,7 +229,7 @@ app.post('/appt_form_create', (req, res) => {
       petHealthSafe,
       description
     ];
-
+<hi></hi>
     db.query(insertSql, values, (err, result) => {
       if (err) {
         console.error('Error inserting appointment:', err);
