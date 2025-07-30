@@ -24,48 +24,48 @@
     <h2 class="text-center mb-4">Pet Food List</h2>
 
     <table class="table table-bordered table-hover text-center">
-      <thead class="table-dark">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Brand</th>
+      <th>Ingredients</th>
+      <th>Price ($)</th>
+      <th>Image</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (petFoods.length > 0) { %>
+      <% petFoods.forEach(food => { %>
         <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Brand</th>
-          <th>Description</th>
-          <th>Price ($)</th>
-          <th>Image</th>
-          <th>Actions</th> <!-- Added Actions column -->
+          <td><%= food.name %></td>
+          <td><%= food.category %></td>
+          <td><%= food.brand %></td>
+          <td><%= food.ingredients %></td>
+          <td><%= food.price.toFixed(2) %></td>
+          <td>
+            <% if (food.image) { %>
+              <img src="/images/<%= food.image %>" alt="Pet Food Image" style="max-width: 80px;">
+            <% } else { %>
+              No image
+            <% } %>
+          </td>
+          <td>
+            <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-info">Edit</a>
+            <form action="/deletePetFood/<%= food.id %>" method="POST" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food?')">Delete</button>
+            </form>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <% if (petFoods.length > 0) { %>
-          <% petFoods.forEach(food => { %>
-            <tr>
-              <td><%= food.name %></td>
-              <td><%= food.category %></td>
-              <td><%= food.brand %></td>
-              <td><%= food.ingredients %></td>
-              <td><%= food.price.toFixed(2) %></td>
-              <td>
-                <% if (food.image) { %>
-                  <img src="/images/<%= food.image %>" alt="Pet Food Image" style="max-width: 80px;">
-                <% } else { %>
-                  No image
-                <% } %>
-              </td>
-              <td>
-                <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
-                <form action="/deletePetFood/<%= food.id %>" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
-                </form>
-              </td>
-            </tr>
-          <% }) %>
-        <% } else { %>
-          <tr>
-            <td colspan="7">No pet food items found.</td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="7">No pet food items found.</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
   </div>
 
 </body>
