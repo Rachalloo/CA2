@@ -1118,7 +1118,7 @@ app.post('/admin_appointments_delete/:id', checkAuthenticated, checkAdmin, (req,
 });
 // En Hui's Part End.
 
-// Starting the server - Rach hihihihihihihihih
+// Starting the server - Rach 
 app.listen(3000, () => {
     console.log('Server started on port 3000');
 });
