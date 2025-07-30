@@ -105,7 +105,7 @@ const validateRegistration = (req, res, next) => {
 
 app.post('/register', validateRegistration, (req, res) => {
     const { username, email, password, address, contact, role } = req.body;
-    const sql = 'INSERT INTO user (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+    const sql = 'INSERT INTO user ( username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
     db.query(sql, [username, email, password, address, contact, role], (err, result) => {
         if (err) throw err;
         req.flash('success', 'Registration successful! Please log in.');
@@ -229,10 +229,10 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
     return res.redirect('/checkout');
   }
 
-  const sql = `INSERT INTO orders (user_id, full_name, address, contact, total_price)
-               VALUES (?, ?, ?, ?, ?)`;
+  const sql = `INSERT INTO orders (full_name, address, contact, total_price)
+               VALUES (?, ?, ?, ?)`;
 
-  db.query(sql, [userId, full_name, address, contact, total_price], (err, result) => {
+  db.query(sql, [ full_name, address, contact, total_price], (err, result) => {
     if (err) throw err;
 
     const orderId = result.insertId;
