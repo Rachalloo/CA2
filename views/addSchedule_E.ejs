@@ -14,59 +14,23 @@
 
   <!-- Main Content -->
   <div class="container mt-4">
-    <h2 class="text-center mb-4">Request for Re-schedule/ Deletion</h2>
+    <h2 class="text-center mb-4">Request for Re-schedule Deletion</h2>
     <form action="/user/schedule/reschedule-request/<%= appointment.appointmentId %>" method="POST"
       enctype="multipart/form-data" class="mx-auto" style="max-width: 500px;">
 
       <h2>Item Name: <%= appointment.appointmentName %></h2>
 
       <div class="mb-3">
-        <label for="startdate" class="form-label">New Start Date:</label>
-        <input type="date" class="form-control" id="startdate" name="startdate" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="enddate" class="form-label">New End Date:</label>
-        <input type="date" class="form-control" id="enddate" name="enddate" required>
-        <span id="dateError" class="text-danger small"></span>
-      </div>
-
-      <div class="mb-3">
-        <input type="checkbox" id="DeleteReq" name="DeleteReq" value="1">
-        <label for="DeleteReq">Request Delete</label>
+        <label for="new_appointment_date" class="form-label">New Start Date:</label>
+        <input type="date" class="form-control" id="new_appointment_date" name="new_appointment_date" required>
       </div>
 
       <div class="d-grid">
-        <button type="submit" class="btn btn-primary">Request for Resched</button>
+        <button type="submit" class="btn btn-primary">Request for Reschedule</button>
       </div>
 
     </form>
   </div>
 </body>
-
-<script>
-  //Date Checker
-  document.addEventListener('DOMContentLoaded', function () { // AI for DOMContentLoaded
-    const startdateresp = document.getElementById('startdate');
-    const enddateresp = document.getElementById('enddate');
-    const dateError = document.getElementById('dateError');
-
-    function validatedate() {
-      const startdate = new Date(startdateresp.value);
-      const enddate = new Date(enddateresp.value);
-
-      if (startdate && enddate && enddate < startdate) {
-        dateError.textContent = 'End date must be after start date.';
-        enddateresp.setCustomValidity('End date must be after start date.');
-      } else {
-        dateError.textContent = '';
-        enddateresp.setCustomValidity('');
-      }
-    }
-
-    startdateresp.addEventListener('change', validatedate); // AI for this line
-    enddateresp.addEventListener('change', validatedate); // AI for this line
-  });
-</script>
 
 </html>
