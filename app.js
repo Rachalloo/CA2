@@ -193,37 +193,54 @@ app.post('/appt_form_create', (req, res) => {
     description
   } = req.body;
 
-  const groomingId = Date.now(); // simple unique ID
+  const petNameSafe = petName || 'Unknown Pet';
+  const petBreedSafe = petBreed || 'Unknown Breed';
+  const petAgeSafe = petAge || 'Unknown Age';
+  const petHealthSafe = petHealth || 'Unknown Health';
 
-  const sql = `INSERT INTO grooming 
-    (groomingId, appointment, name, contact, email, date, time, firstTime, petName, petBreed, petAge, petHealth, description)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  const values = [
-    groomingId,
-    appointment,      
-    name,
-    contact,
-    email,
-    date,
-    time,
-    firstTime,
-    petName,
-    petBreed,
-    petAge,
-    petHealth,
-    description
-  ];
-
-  db.query(sql, values, (err, result) => {
+  const getMaxGroomingIdSql = 'SELECT MAX(groomingId) AS maxId FROM grooming';
+  db.query(getMaxGroomingIdSql, (err, results) => {
     if (err) {
-      console.error('Error inserting appointment:', err);
+      console.error('Error getting max groomingId:', err);
       return res.send('Error occurred');
     }
 
-    res.redirect('/submit_success');
+    let nextGroomingId = 1;
+    if (results[0].maxId !== null) {
+      nextGroomingId = results[0].maxId + 1;
+    }
+
+    const insertSql = `INSERT INTO grooming 
+      (groomingId, appointment, name, contact, email, date, time, firstTime, petName, petBreed, petAge, petHealth, description)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const values = [
+      nextGroomingId,
+      appointment,
+      name,
+      contact,
+      email,
+      date,
+      time,
+      firstTime,
+      petNameSafe,
+      petBreedSafe,
+      petAgeSafe,
+      petHealthSafe,
+      description
+    ];
+
+    db.query(insertSql, values, (err, result) => {
+      if (err) {
+        console.error('Error inserting appointment:', err);
+        return res.send('Error occurred');
+      }
+
+      res.redirect('/submit_success');
+    });
   });
 });
+
 
 // Shopping cart routes
 app.get('/shop', (req, res) => {
