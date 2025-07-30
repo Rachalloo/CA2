@@ -22,18 +22,6 @@
     <p style="color: red;">No pets found for "<%= query %>"</p>
 <% } %>
 
-  <% if (pets.length > 0) { %>
-      <ul>
-        <% pets.forEach(pet=> { %>
-          <li>
-            <%= pet.petName %>
-          </li>
-          <% }) %>
-      </ul>
-      <% } else if (query) { %>
-        <p style="color: red;">The pet is not found inside the hotel.</p>
-        <% } %>
-
   <div class="container">
     <br>
     <div class="text-center">
