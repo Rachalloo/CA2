@@ -503,7 +503,7 @@ app.get('/programme', (req, res) => {
         }
 
         // Render HTML page with data
-        res.render('programme_j', { programme: results, user: req.session.user});
+        res.render('programme_j', { programme: results});
     });
 });
 
@@ -520,7 +520,7 @@ app.get('/programme/:id', (req, res) => {
         }
         
         if (results.length > 0) {
-            res.render('programme_j', { programme: results[0] });
+            res.render('programme_j', { programme: results[0], user: req.session.user });
         } else {
             res.status(404).send('Programme not found');
         }
