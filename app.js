@@ -884,7 +884,7 @@ app.get('/Home', checkAuthenticated, (req, res) => {
 
 //USER
 app.get('/user_schedule', checkAuthenticated, (req, res) => {
-  const userId = req.session.user.id;
+  const user_id = req.session.user.id;
 
   // Grooming appointments by this user
   const groomingQuery = `
@@ -898,7 +898,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
     FROM appointments 
     WHERE user_id = ?`;
 
-  // Pet hotel bookings by this user
+  // Pet hotel bookings by this user hihih
   const pet_hotelQuery = `
     SELECT id, "Pet Hotel" AS type, pet_name AS title, start_date AS appointmentDate, NULL AS time, NULL AS petName, NULL AS petBreed 
     FROM pet_hotel 
