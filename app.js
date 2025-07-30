@@ -229,7 +229,7 @@ app.post('/appt_form_create', (req, res) => {
       petHealthSafe,
       description
     ];
-<hi></hi>
+
     db.query(insertSql, values, (err, result) => {
       if (err) {
         console.error('Error inserting appointment:', err);
@@ -984,13 +984,32 @@ app.post('/user_schedule_schedule-delete-request/:id', checkAuthenticated, (req,
 
 //ADMIN 
 app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
-  db.query(
-    'SELECT * FROM appointments',
-    (error, results) => {
-      if (error) return res.sendStatus(500);
-      res.render('adminSchedule_E', { appointments: results, user: req.session.user });
+  const groomingQuery = 'SELECT groomingId AS id, "Grooming" AS type, appointment AS title, name, date AS appointmentDate, time, petName, petBreed FROM grooming';
+  const vetQuery = 'SELECT appointmentId AS id, "Vet" AS type, reason AS title, vet_name AS name, appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, NULL AS petBreed FROM appointments';
+
+  db.query(groomingQuery, (err, groomingResults) => {
+    if (err) {
+      console.error('Error fetching grooming:', err);
+      return res.sendStatus(500);
     }
-  );
+
+    db.query(vetQuery, (err2, vetResults) => {
+      if (err2) {
+        console.error('Error fetching vet appointments:', err2);
+        return res.sendStatus(500);
+      }
+
+      const allAppointments = [...groomingResults, ...vetResults];
+
+      // Optional: sort by date
+      allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+
+      res.render('adminSchedule_E', {
+        appointments: allAppointments,
+        user: req.session.user
+      });
+    });
+  });
 });
 
 app.post('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
@@ -1045,18 +1064,15 @@ app.get('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin,
   );
 });
 
-app.post('/admin_schedule_deleteSchedule/:id', (req, res) => {
+app.post('/admin_appointments_delete/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const appointmentId = parseInt(req.params.id);
 
-  db.query('DELETE FROM appointments WHERE appointmentId = ?', [appointmentId], (error, results) => {
-    if (error) {
-      // Handle any error that occurs during the database operation
-      console.error("Error deleting schedule item:", error);
-      res.status(500).send('Error deleting schedule item');
-    } else {
-      // Send a success response
-      res.redirect('/admin_schedule');
+  db.query('DELETE FROM appointments WHERE appointmentId = ?', [appointmentId], (err) => {
+    if (err) {
+      console.error('Error deleting vet appointment:', err);
+      return res.sendStatus(500);
     }
+    res.redirect('/admin_schedule');
   });
 });
 // En Hui's Part End.
