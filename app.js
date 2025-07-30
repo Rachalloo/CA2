@@ -878,7 +878,7 @@ app.post('/user_schedule/:id', checkAuthenticated, (req, res) => {
     });
 });
 
-app.get('/user_schedule_reschedule_request/:id', checkAuthenticated, (req, res) => {
+app.get('/user_schedule_reschedule-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = req.params.id;
     const userId = req.session.user.id;
 
