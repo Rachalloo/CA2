@@ -13,7 +13,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/petFoodList">Pet Foods</a>
                 </li>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/grooming">Pet Grooming</a>
                 </li>
@@ -24,7 +23,7 @@
                     <a class="nav-link" href="/programme">Programmes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/partnership">partnership</a>
+                    <a class="nav-link" href="/partnership">Partnership</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/appt_form_create">Make Appointment/ Booking</a>
@@ -36,19 +35,18 @@
                     </a>
                     <ul class="dropdown-menu">
                         <% if (user) { %>
-                            <% if (user.role==="admin" ) { %>
+                            <% if (user.role === "admin") { %>
                                 <li><a class="dropdown-item" href="/petDetails">Pet Hotel Booking(s)</a></li>
                                 <li><a class="dropdown-item" href="/appointments">Vet Appointment(s)</a></li>
                                 <li><a class="dropdown-item" href="/admin_schedule">View All</a></li>
                             <% } else { %>
-                                <li><a class="dropdown-item" href="/pet/<%=pets.petId%>">Pet Hotel Booking(s)</a></li>
+                                <li><a class="dropdown-item" href="/pet/<%= pets.petId %>">Pet Hotel Booking(s)</a></li>
                                 <li><a class="dropdown-item" href="/appointments">Vet Appointment(s)</a></li>
                                 <li><a class="dropdown-item" href="/user_schedule">View All</a></li>
                             <% } %>
                         <% } else { %>
-                            <br>
-                            Hi! Welcome to Pet Council! <br>
-                            Please <a href="/login">login</a> to continue...
+                            <li><span class="dropdown-item-text">Hi! Welcome to Pet Council!</span></li>
+                            <li><a class="dropdown-item" href="/login">Please login to continue...</a></li>
                         <% } %>
                     </ul>
                 </li>
