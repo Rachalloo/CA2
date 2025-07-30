@@ -533,197 +533,201 @@ app.post('/medications/edit/:id', (req, res) => {
 
 // List all programmes
 app.get('/programme', (req, res) => {
-    db.query('SELECT * FROM programme', (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error Retrieving programme');
-        }
-        res.render('programme_j', {
-            programmes: results,
-            user: req.session.user,
-        });
+  db.query('SELECT * FROM programme', (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error Retrieving programme');
+    }
+    res.render('programme_j', {
+      programmes: results,
+      user: req.session.user,
     });
+  });
 });
 
-// View a single programme 
+// View a single programme
 app.get('/programme/:id', (req, res) => {
-    const programmeId = req.params.id;
-    db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error retrieving programme by ID');
-        }
-        if (results.length > 0) {
-            res.render('programme_j', {
-                programmes: [results[0]], 
-                user: req.session.user,
-            });
-        } else {
-            res.status(404).send('Programme not found');
-        }
-    });
+  const programmeId = req.params.id;
+  db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error retrieving programme by ID');
+    }
+    if (results.length > 0) {
+      res.render('programme_j', {
+        programmes: [results[0]],  // Wrap in array for reuse of listing EJS
+        user: req.session.user,
+      });
+    } else {
+      res.status(404).send('Programme not found');
+    }
+  });
 });
 
 // Add Programme - GET
 app.get('/addProg', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addProg_j', { user: req.session.user });
+  res.render('addProg_j', { user: req.session.user });
 });
 
 // Add Programme - POST
 app.post('/addProg', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const { name, description, startDate, endDate, location } = req.body;
-    let image = req.file ? req.file.filename : null;
-    const sql = "INSERT INTO programme (name, description, startDate, endDate, location, image) VALUES (?, ?, ?, ?, ?, ?)";
-    db.query(sql, [name, description, startDate, endDate, location, image], (error) => {
-        if (error) {
-            console.error("Error adding programme:", error);
-            return res.status(500).send("Error adding programme");
-        }
-        res.redirect('/programme');
-    });
+  const { name, description, startDate, endDate, location } = req.body;
+  const image = req.file ? req.file.filename : null;
+  const sql = "INSERT INTO programme (name, description, startDate, endDate, location, image) VALUES (?, ?, ?, ?, ?, ?)";
+  db.query(sql, [name, description, startDate, endDate, location, image], (error) => {
+    if (error) {
+      console.error("Error adding programme:", error);
+      return res.status(500).send("Error adding programme");
+    }
+    res.redirect('/programme');
+  });
 });
 
 // Edit Programme - GET
 app.get('/editProg/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const programmeId = req.params.id;
-    db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error retrieving programme by ID');
-        }
-        if (results.length > 0) {
-            res.render('editProg_j', { programme: results[0], user: req.session.user });
-        } else {
-            res.status(404).send('Programme not found');
-        }
-    });
+  const programmeId = req.params.id;
+  db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error retrieving programme by ID');
+    }
+    if (results.length > 0) {
+      res.render('editProg_j', { programme: results[0], user: req.session.user });
+    } else {
+      res.status(404).send('Programme not found');
+    }
+  });
 });
 
 // Edit Programme - POST
 app.post('/editProg/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const programmeId = req.params.id;
-    const { name, description, startDate, endDate, location } = req.body;
-    let image = req.body.currentImage;
-    if (req.file) image = req.file.filename;
-    const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image = ? WHERE programmeId = ?';
-    db.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error) => {
-        if (error) {
-            console.error("Error updating programme:", error);
-            return res.status(500).send('Error updating programme');
-        }
-        res.redirect('/programme');
-    });
+  const programmeId = req.params.id;
+  const { name, description, startDate, endDate, location } = req.body;
+  let image = req.body.currentImage;
+  if (req.file) image = req.file.filename;
+
+  const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image = ? WHERE programmeId = ?';
+  db.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error) => {
+    if (error) {
+      console.error("Error updating programme:", error);
+      return res.status(500).send('Error updating programme');
+    }
+    res.redirect('/programme');
+  });
 });
 
-// Delete Programme
-app.get('/deleteProg/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const programmeId = req.params.id;
-    db.query('DELETE FROM programme WHERE programmeId = ?', [programmeId], (error) => {
-        if (error) {
-            console.error("Error deleting programme:", error);
-            return res.status(500).send('Error deleting programme');
-        }
-        res.redirect('/programme');
-    });
+// Delete Programme - POST (safer deletion)
+app.post('/deleteProg/:id', checkAuthenticated, checkAdmin, (req, res) => {
+  const programmeId = req.params.id;
+  db.query('DELETE FROM programme WHERE programmeId = ?', [programmeId], (error) => {
+    if (error) {
+      console.error("Error deleting programme:", error);
+      return res.status(500).send('Error deleting programme');
+    }
+    res.redirect('/programme');
+  });
 });
+
 
 // --- PARTNERSHIP ROUTES ---
 
-// List all partnerships 
+// List all partnerships
 app.get('/partnership', (req, res) => {
-    db.query('SELECT * FROM partnership', (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error Retrieving partnership');
-        }
-        res.render('partnership_j', {
-            partnerships: results,
-            user: req.session.user,
-        });
+  db.query('SELECT * FROM partnership', (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error Retrieving partnership');
+    }
+    res.render('partnership_j', {
+      partnerships: results,
+      user: req.session.user,
     });
+  });
 });
 
-// View a single partnership 
+// View a single partnership
 app.get('/partnership/:id', (req, res) => {
-    const partnershipId = req.params.id;
-    db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error retrieving partnership by ID');
-        }
-        if (results.length > 0) {
-            res.render('partnership_j', {
-                partnerships: [results[0]],
-                user: req.session.user,
-            });
-        } else {
-            res.status(404).send('Partnership not found');
-        }
-    });
+  const partnershipId = req.params.id;
+  db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error retrieving partnership by ID');
+    }
+    if (results.length > 0) {
+      res.render('partnership_j', {
+        partnerships: [results[0]],
+        user: req.session.user,
+      });
+    } else {
+      res.status(404).send('Partnership not found');
+    }
+  });
 });
 
 // Add Partnership - GET
 app.get('/addPartnership', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addPartnership_j', { user: req.session.user });
+  res.render('addPartnership_j', { user: req.session.user });
 });
 
 // Add Partnership - POST
 app.post('/addPartnership', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const { name, contact, email } = req.body;
-    let image = req.file ? req.file.filename : null;
-    const sql = "INSERT INTO partnership (name, contact, email, image) VALUES (?, ?, ?, ?)";
-    db.query(sql, [name, contact, email, image], (error) => {
-        if (error) {
-            console.error("Error adding partnership:", error);
-            return res.status(500).send("Error adding partnership");
-        }
-        res.redirect('/partnership');
-    });
+  const { name, contact, email } = req.body;
+  const image = req.file ? req.file.filename : null;
+  const sql = "INSERT INTO partnership (name, contact, email, image) VALUES (?, ?, ?, ?)";
+  db.query(sql, [name, contact, email, image], (error) => {
+    if (error) {
+      console.error("Error adding partnership:", error);
+      return res.status(500).send("Error adding partnership");
+    }
+    res.redirect('/partnership');
+  });
 });
 
 // Edit Partnership - GET
 app.get('/editPartnership/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const partnershipId = req.params.id;
-    db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
-        if (error) {
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error retrieving partnership by ID');
-        }
-        if (results.length > 0) {
-            res.render('editPartnership_j', { partnership: results[0], user: req.session.user });
-        } else {
-            res.status(404).send('Partnership not found');
-        }
-    });
+  const partnershipId = req.params.id;
+  db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
+    if (error) {
+      console.error('Database query error:', error.message);
+      return res.status(500).send('Error retrieving partnership by ID');
+    }
+    if (results.length > 0) {
+      res.render('editPartnership_j', { partnership: results[0], user: req.session.user });
+    } else {
+      res.status(404).send('Partnership not found');
+    }
+  });
 });
 
 // Edit Partnership - POST
 app.post('/editPartnership/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const partnershipId = req.params.id;
-    const { name, contact, email } = req.body;
-    let image = req.body.currentImage;
-    if (req.file) image = req.file.filename;
-    const sql = 'UPDATE partnership SET name = ?, contact = ?, email = ?, image = ? WHERE partnershipId = ?';
-    db.query(sql, [name, contact, email, image, partnershipId], (error) => {
-        if (error) {
-            console.error("Error updating partnership:", error);
-            return res.status(500).send('Error updating partnership');
-        }
-        res.redirect('/partnership');
-    });
+  const partnershipId = req.params.id;
+  const { name, contact, email } = req.body;
+  let image = req.body.currentImage;
+  if (req.file) image = req.file.filename;
+
+  const sql = 'UPDATE partnership SET name = ?, contact = ?, email = ?, image = ? WHERE partnershipId = ?';
+  db.query(sql, [name, contact, email, image, partnershipId], (error) => {
+    if (error) {
+      console.error("Error updating partnership:", error);
+      return res.status(500).send('Error updating partnership');
+    }
+    res.redirect('/partnership');
+  });
 });
 
-// Delete Partnership
-app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const partnershipId = req.params.id;
-    db.query('DELETE FROM partnership WHERE partnershipId = ?', [partnershipId], (error) => {
-        if (error) {
-            console.error("Error deleting partnership:", error);
-            return res.status(500).send('Error deleting partnership');
-        }
-        res.redirect('/partnership');
-    });
+// Delete Partnership - POST
+app.post('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => {
+  const partnershipId = req.params.id;
+  db.query('DELETE FROM partnership WHERE partnershipId = ?', [partnershipId], (error) => {
+    if (error) {
+      console.error("Error deleting partnership:", error);
+      return res.status(500).send('Error deleting partnership');
+    }
+    res.redirect('/partnership');
+  });
 });
+
 //Jeslyn part end
 
 // xinyue part end
@@ -885,9 +889,8 @@ app.get('/user_schedule_reschedule_request/:id', checkAuthenticated, (req, res) 
             if (error) return res.sendStatus(500);
             if (results.length === 0)
                 return res.sendStatus(404);
-            res.render('addSchedule_E', { appointment: results[0] });
-        }
-    );
+            res.render('addSchedule_E', { appointment: results[0], user: req.session.user });
+        });
 });
 
 app.post('/user_schedule_reschedule-request/:id', checkAuthenticated, (req, res) => {
@@ -924,7 +927,7 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         'SELECT * FROM appointments',
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('adminSchedule_E', { requests: results, user: req.session.user});
+            res.render('adminSchedule_E', { requests: results, user: req.session.user });
         }
     );
 });
