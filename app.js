@@ -763,6 +763,11 @@ app.get('/petFoodList', (req, res) => {
 //Xinyue part end
 
 // En Hui's Part.
+// HOME
+app.get('/', checkAuthenticated, (req, res) => {
+    res.render('frontPage');
+});
+
 //USER
 app.get('/user_schedule', checkAuthenticated, (req, res) => {
     connection.query(
@@ -811,7 +816,7 @@ app.get('/user_schedule_reschedule_request/:id', checkAuthenticated, (req, res) 
         [appointmentId, userId],
         (error, results) => {
             if (error) return res.sendStatus(500);
-            if (results.length === 0) 
+            if (results.length === 0)
                 return res.sendStatus(404);
             res.render('addSchedule_E', { appointment: results[0] });
         }
@@ -853,7 +858,7 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         (error, results) => {
             if (error) return res.sendStatus(500);
             res.render('adminSchedule_E', { requests: results });
-        }  
+        }
     );
 });
 
