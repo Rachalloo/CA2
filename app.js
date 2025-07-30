@@ -435,17 +435,16 @@ app.get("/deletePet/:id", checkAuthenticated, checkAdmin, (req, res) => {
 app.get("/search", (req, res) => {
     const searchQuery = req.query.search || "";
     const sql = searchQuery 
-        ? "SELECT * FROM pets WHERE petName LIKE ?"
-        : "SELECT * FROM pets";
+        ? "SELECT * FROM pet_hotel WHERE pet_name LIKE ?"
+        : "SELECT * FROM pet_hotel";
     const params = searchQuery ? [`%${searchQuery}%`] : [];
     db.query(sql, params, (err, results) => {
         if (err) {
-            console.error("Error searching pets:", err.message);
-            return res.status(500).send("Error retrieving pets.");
+            console.error("Error searching pet:", err.message);
+            return res.status(500).send("Error retrieving pet");
         }
-        //if no pets found, render the page with empty results and pass a message
         res.render("index_d", {
-            pets: results,
+            pet: results,
             query: searchQuery,
             noResults: results.length === 0
         });
@@ -885,13 +884,47 @@ app.get('/Home', checkAuthenticated, (req, res) => {
 
 //USER
 app.get('/user_schedule', checkAuthenticated, (req, res) => {
-  db.query(
-    'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
-    (error, results) => {
-      if (error) return res.sendStatus(500);
-      res.render('userSchedule_E', { appointments: results, user: req.session.user });
+  const userId = req.session.user.id;
+
+  // Grooming appointments by this user
+  const groomingQuery = `
+    SELECT groomingId AS id, "Grooming" AS type, appointment AS title, date AS appointmentDate, time, petName, petBreed 
+    FROM grooming 
+    WHERE user_id = ?`;
+
+  // Vet appointments by this user
+  const vetQuery = `
+    SELECT appointmentId AS id, "Vet" AS type, reason AS title, appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, NULL AS petBreed 
+    FROM appointments 
+    WHERE user_id = ?`;
+
+  // Pet hotel bookings by this user
+  const hotelQuery = `
+    SELECT id, "Pet Hotel" AS type, pet_name AS title, start_date AS appointmentDate, NULL AS time, NULL AS petName, NULL AS petBreed 
+    FROM pet_hotel 
+    WHERE user_id = ?`;
+
+  db.query(groomingQuery, [userId], (err1, groomingResults) => {
+    if (err1) {
+      console.error("Error fetching grooming appointments:", err1);
+      return res.status(500).send("Error fetching grooming data.");
     }
-  );
+
+    db.query(vetQuery, [userId], (err2, vetResults) => {
+      if (err2) {
+        console.error("Error fetching vet appointments:", err2);
+        return res.status(500).send("Error fetching vet data.")
+
+        const allAppointments = [...groomingResults, ...vetResults];
+        allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+
+        res.render('userSchedule_E', {
+          appointments: allAppointments,
+          user: req.session.user
+        });
+      });
+    });
+  });
 });
 
 app.post('/user_schedule/:id', checkAuthenticated, (req, res) => {
@@ -978,7 +1011,10 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
     FROM appointments`;
 
   const petHotelQuery = `
-  SELECT id AS id, 'Pet Hotel' AS type, `
+    SELECT id AS id, 'Pet Hotel' AS type, pet_name AS title, customer_name AS name,
+           start_date AS appointmentDate, NULL AS time, pet_name AS petName, 
+           NULL AS petBreed 
+    FROM pet_hotel`;
 
   db.query(groomingQuery, (err, groomingResults) => {
     if (err) {
@@ -992,17 +1028,25 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
         return res.sendStatus(500);
       }
 
-      const allAppointments = groomingResults.concat(vetResults);
-      allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+      db.query(petHotelQuery, (err3, petHotelResults) => {
+        if (err3) {
+          console.error('Error fetching pet hotel bookings:', err3);
+          return res.sendStatus(500);
+        }
 
-      res.render('adminSchedule_E', {
-        appointments: allAppointments,
-        user: req.session.user
+        const allAppointments = groomingResults.concat(vetResults, petHotelResults);
+
+        // Sort by appointmentDate ascending
+        allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
+
+        res.render('adminSchedule_E', {
+          appointments: allAppointments,
+          user: req.session.user
+        });
       });
     });
   });
 });
-
 app.get('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const appointmentId = parseInt(req.params.id);
 
