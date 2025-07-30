@@ -23,52 +23,52 @@
   <div class="container mt-5">
     <h2 class="text-center mb-4">Add New Pet Food</h2>
 
-    <form action="/pet-products/add/food" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
-      <div class="mb-3">
-        <label for="name" class="form-label">Food Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-      </div>
+<form action="/addPetFood" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
+  <div class="mb-3">
+    <label for="name" class="form-label">Food Name</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
 
-      <div class="mb-3">
-        <label for="category" class="form-label">Food Type</label>
-        <select name="category" id="category" class="form-control" required>
-          <option value="">-- Select Type --</option>
-          <option value="Dry Food">Dry Food</option>
-          <option value="Wet Food">Wet Food</option>
-          <option value="Raw Diets">Treats</option>
-        </select>
-      </div>
+  <div class="mb-3">
+    <label for="category" class="form-label">Category</label>
+    <select name="category" id="category" class="form-control" required>
+      <option value="">-- Select Type --</option>
+      <option value="Dry Food">Dry Food</option>
+      <option value="Wet Food">Wet Food</option>
+      <option value="Treats">Treats</option>
+    </select>
+  </div>
 
-      <div class="mb-3">
-        <label for="brand" class="form-label">Brand</label>
-        <input type="text" class="form-control" id="brand" name="brand" required>
-      </div>
+  <div class="mb-3">
+    <label for="brand" class="form-label">Brand</label>
+    <input type="text" class="form-control" id="brand" name="brand" required>
+  </div>
 
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
-      </div>
+  <div class="mb-3">
+    <label for="ingredients" class="form-label">Ingredients</label>
+    <textarea class="form-control" id="ingredients" name="ingredients" rows="3" required></textarea>
+  </div>
 
-      <div class="mb-3">
-        <label for="price" class="form-label">Price ($)</label>
-        <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
-      </div>
+  <div class="mb-3">
+    <label for="price" class="form-label">Price ($)</label>
+    <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" required>
+  </div>
 
-      <div class="mb-3">
-        <label for="quantity" class="form-label">Quantity</label>
-         <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
-      </div>
+  <div class="mb-3">
+    <label for="quantity" class="form-label">Quantity</label>
+     <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
+  </div>
 
-      <div class="mb-3">
-        <label for="image" class="form-label">Image</label>
-        <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-      </div>
+  <div class="mb-3">
+    <label for="image" class="form-label">Image</label>
+    <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+  </div>
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">Add Food</button>
+    <a href="/petFoodList" class="btn btn-secondary ms-2">Cancel</a>
+  </div>
+</form>
 
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary">Add Food</button>
-        <a href="/pet-products" class="btn btn-secondary ms-2">Cancel</a>
-      </div>
-    </form>
   </div>
 </body>
 
