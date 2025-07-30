@@ -255,15 +255,17 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
 //doris part start
 //define routes
 app.get("/petDetails", (req, res) => {
+    if (!req.session.user || req.session.user.role !== "admin") {
+        return res.status(403).send("Access denied. Admins only.");
+        res.redirect("/login");
+    }
     const sql = "SELECT * FROM pets";
-    //fetch data from mysql
     db.query(sql, (error, results) => {
         if (error) {
             console.error("Database query error:", error.message);
             return res.status(500).send("Error retrieving pets.");
         }
-    //render HTML page with data
-    res.render("index_d", {pets: results});
+        res.render("index_d", { pets: results });
     });
 });
 
