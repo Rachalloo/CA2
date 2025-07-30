@@ -45,11 +45,12 @@
               <td><%= food.food_price ? Number(food.food_price).toFixed(2) : '0.00' %></td>
               <td><%= food.food_quantity %></td>
               <td>
+              <td>
                 <% if (food.image) { %>
-                  <img src="/pictures/pet_food.png" alt="Pet Food Image" class="img-fluid rounded" style="max-width: 100px;">
+                <img src="/pictures/<%= food.image %>" alt="Pet Food Image" class="img-fluid rounded" style="max-width: 100px;">
                 <% } else { %>
-                  No image
-                <% } %>
+                No image
+              <% } %>
               </td>
               <td>
                 <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
