@@ -764,7 +764,7 @@ app.get('/petFoodList', (req, res) => {
 
 // En Hui's Part.
 // HOME
-app.get('/', checkAuthenticated, (req, res) => {
+app.get('/Home', checkAuthenticated, (req, res) => {
     res.render('frontPage');
 });
 
