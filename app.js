@@ -503,7 +503,7 @@ app.get('/programme', (req, res) => {
         }
 
         // Render HTML page with data
-        res.render('programme_j', { programme: results });
+        res.render('programme_j', { programme: results, user: req.session.user});
     });
 });
 
