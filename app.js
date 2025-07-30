@@ -892,7 +892,7 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
     FROM grooming 
     WHERE name = ?`;
 
-  // Vet appointments by this user hihi
+  // Vet appointments by this user
   const vetQuery = `
     SELECT appointmentId AS id, "Vet" AS type, reason AS title, appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, NULL AS petBreed 
     FROM appointments 
