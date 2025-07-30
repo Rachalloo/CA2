@@ -786,7 +786,7 @@ app.get('/user/schedule', checkAuthenticated, (req, res) => {
         'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('userSchedule', { requests: results });
+            res.render('userSchedule_E', { requests: results });
         }
     );
 });
@@ -808,25 +808,40 @@ app.post('/user/schedule/:id', checkAuthenticated, (req, res) => {
                 req.session.appointment.push({
                     appointmentId: appointment.appointmentId,
                     appointmentName: appointment.appointmentName,
-                    appointmentStartDate: appointment.appointmentStartDate,
-                    appointmentEndDate: appointment.appointmentEndDate,
+                    appointmentDate: appointment.appointmentDate,
                 });
             }
 
             res.redirect('/user/schedule');
         } else {
-            res.status(404).send("Product not found");
+            res.status(404).send("Schedule item not found");
         }
     });
 });
 
-app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
-    const appointmentId = parseInt(req.params.id);
-    const { DeleteReq, startdate, enddate } = req.body;
+app.get('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
+    const appointmentId = req.params.id;
+    const userId = req.session.user.id;
 
     connection.query(
-        'UPDATE appointments SET reschedule_request = 1, delete_request = ?, new_start_date = ?, new_end_date = ?, date_of_request = NOW() WHERE appointment_id = ? AND user_id = ?',
-        [DeleteReq, startdate, enddate, appointmentId, req.session.user.id],
+        'SELECT * FROM appointments WHERE appointmentId = ? AND user_id = ?',
+        [appointmentId, userId],
+        (error, results) => {
+            if (error) return res.sendStatus(500);
+            if (results.length === 0) 
+                return res.sendStatus(404);
+            res.render('addSchedule_E', { appointment: results[0] });
+        }
+    );
+});
+
+app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
+    const appointmentId = parseInt(req.params.id);
+    const { DeleteReq, appointmentDate } = req.body;
+
+    connection.query(
+        'UPDATE appointments SET reschedule_request = 1, delete_request = ?, appointment_date = ?, date_of_request = NOW() WHERE appointment_id = ? AND user_id = ?',
+        [DeleteReq, appointmentDate, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
             res.redirect('/user/schedule');
@@ -836,11 +851,11 @@ app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res)
 
 app.post('/user/schedule/schedule-delete-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
-    const { ReschId, newStartDate, newEndDate } = req.body;
+    const { ReschId, appointmentDate } = req.body;
 
     connection.query(
-        'UPDATE appointments SET reschedule_request = ?, delete_request = 1, date_of_request = NOW(), new_start_date = ?, new_end_date = ? WHERE appointment_id = ? AND user_id = ?',
-        [ReschId, newStartDate, newEndDate, appointmentId, req.session.user.id],
+        'UPDATE appointments SET reschedule_request = ?, delete_request = 1, date_of_request = NOW(), appointment_date = ? WHERE appointment_id = ? AND user_id = ?',
+        [ReschId, appointmentDate, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
             res.redirect('/user/schedule');
@@ -863,17 +878,17 @@ app.post('/admin/schedule/review-reschedule/:id', checkAuthenticated, checkAdmin
     const appointmentId = parseInt(req.params.id);
 
     connection.query(
-        'SELECT new_start_date, new_end_date, delete_request FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
+        'SELECT new_appointment_date, delete_request FROM appointments WHERE appointment_id = ? AND reschedule_request = 1',
         [appointmentId],
         (error, results) => {
             if (error) throw error
             if (results.length === 0) return res.status(404).send('No reschedule request found.');
 
-            const { DeleteReq, newStartDate, newEndDate } = results[0];
+            const { delete_request, new_appointment_date } = results[0];
 
             connection.query(
-                `UPDATE appointments SET reschedule_request = 0, delete_request = ?, start_date = ?, end_date = ?, date_of_request = NULL, new_start_date = NULL, new_end_date = NULL WHERE appointment_id = ?`,
-                [DeleteReq, newStartDate, newEndDate, appointmentId],
+                `UPDATE appointments SET reschedule_request = 0, delete_request = ?, appointment_date = ?, date_of_request = NULL, new_appointment_date = NULL WHERE appointment_id = ?`,
+                [delete_request, new_appointment_date, appointmentId],
                 (err) => {
                     if (err) {
                         console.error("Error Rescheduling:", err);
