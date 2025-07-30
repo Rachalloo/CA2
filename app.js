@@ -474,7 +474,20 @@ app.get('/appointments', (req, res) => {
 
 // CREATE: Form to Add appointment
 app.get('/appointments/add', (req, res) => {
-    res.render('appt_form_create_SRD', {user: req.session.user});
+    res.render('appt_add_S', {user: req.session.user});
+});
+
+app.post('/appointments/add', (req, res) => {
+    const { pet_name, vet_name, appointment_date, reason, status} = req.body;
+    const appointment_name = '0';
+    const reschedule_request = req.body.reschedule_request || '0';
+    const delete_request = req.body.delete_request || '0';
+    const sql = 'INSERT INTO appointments (pet_name, vet_name, appointment_date, reason, status, appointment_name, reschedule_request, delete_request) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [pet_name, vet_name, appointment_date, reason, status, appointment_name, reschedule_request, delete_request], (err) => {
+        if (err) throw err;
+        req.flash('success', 'Appointment added!');
+        res.redirect('/appointments');
+    });
 });
 
 // UPDATE: Edit form
