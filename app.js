@@ -175,7 +175,11 @@ app.get('/appt_form_create', (req, res) => {
 
 app.post('/appt_form_create', (req, res) => {
     console.log(req.body);
-    res.render('submit_sucess_SRD');
+    res.render('appt_form_create_SRD');
+});
+
+app.get('/Success', (req, res) => {
+    res.render('submit_success_SRD');
 });
 
 // Shopping cart routes
