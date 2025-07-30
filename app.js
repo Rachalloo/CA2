@@ -78,7 +78,7 @@ const checkAdmin = (req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.render('index', { user: req.session.user, messages: req.flash('success') });
+    res.render('index_R', { user: req.session.user, messages: req.flash('success') });
 });
 
 app.get('/register', (req, res) => {
@@ -105,7 +105,7 @@ const validateRegistration = (req, res, next) => {
 
 app.post('/register', validateRegistration, (req, res) => {
     const { username, email, password, address, contact, role } = req.body;
-    const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+    const sql = 'INSERT INTO user (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
     db.query(sql, [username, email, password, address, contact, role], (err, result) => {
         if (err) throw err;
         req.flash('success', 'Registration successful! Please log in.');
@@ -148,7 +148,7 @@ app.get('/dashboard', checkAuthenticated, (req, res) => {
 });
 
 app.get('/admin', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('admin', { user: req.session.user });
+    res.render('admin_R', { user: req.session.user });
 });
 
 app.get('/logout', (req, res) => {
@@ -157,11 +157,11 @@ app.get('/logout', (req, res) => {
 });
 
 // Grooming pages
-app.get('/grooming_R', (req, res) => {
+app.get('/grooming', (req, res) => {
     res.render('grooming_R');
 });
 
-app.get('/appt_from_create_SRDE', (req, res) => {
+app.get('/appt_from_create', (req, res) => {
     res.render('appt_from_create_SRDE');
 });
 
@@ -172,7 +172,7 @@ app.post('/appt_from_create_SRDE', (req, res) => {
 
 // Shopping cart routes
 app.get('/shop', (req, res) => {
-    res.render('shop', { products, user: req.session.user, messages: req.flash('success') });
+    res.render('shop_R', { products, user: req.session.user, messages: req.flash('success') });
 });
 
 app.post('/add-to-cart', (req, res) => {
@@ -205,7 +205,7 @@ app.get('/cart', (req, res) => {
         total += cart[i].price * cart[i].quantity;
     }
 
-    res.render('cart', { cart, total, user: req.session.user, messages: req.flash('success') });
+    res.render('cart_R', { cart, total, user: req.session.user, messages: req.flash('success') });
 });
 
 app.post('/remove-from-cart', (req, res) => {
@@ -216,11 +216,11 @@ app.post('/remove-from-cart', (req, res) => {
 });
 
 app.get('/checkout', checkAuthenticated, (req, res) => {
-  res.render('checkout', { messages: req.flash('error') });
+  res.render('checkout_R', { messages: req.flash('error') });
 });
 
 // Route to handle checkout form submission
-app.post('/checkout_R', checkAuthenticated, (req, res) => {
+app.post('/checkout', checkAuthenticated, (req, res) => {
   const { full_name, address, contact, total_price } = req.body;
   const userId = req.session.user.id;
 
