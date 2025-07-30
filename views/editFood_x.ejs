@@ -59,14 +59,16 @@
         <div class="mb-3">
           <label class="form-label">Current Image</label>
           <input type="text" name="currentImage" class="form-control" value="<%= food.image %>" readonly>
+  
           <% if (food.image) { %>
-            <div class="mt-2">
-              <img src="/Pictures/<%= food.image %>" alt="Current Image" class="img-thumbnail" style="max-width: 200px;">
-            </div>
-          <% } else { %>
-            <div class="mt-2 text-muted">No image available.</div>
-          <% } %>
+          <div class="mt-2">
+          <img src="/pictures/<%= food.image %>" alt="Current Image" class="img-thumbnail" style="max-width: 200px;">
         </div>
+          <% } else { %>
+          <div class="mt-2 text-muted">No image available.</div>
+        <% } %>
+      </div>
+
 
         <div class="mb-3">
           <label for="image" class="form-label">New Image (optional)</label>
