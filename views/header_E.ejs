@@ -36,11 +36,11 @@
                     <ul class="dropdown-menu">
                         <% if (user) { %>
                             <% if (user.role === "admin") { %>
-                                <li><a class="dropdown-item" href="/petDetails">Pet Hotel Booking(s)</a></li>
+                                <li><a class="dropdown-item" href="/petHotel">Pet Hotel Booking(s)</a></li>
                                 <li><a class="dropdown-item" href="/appointments">Vet Appointment(s)</a></li>
                                 <li><a class="dropdown-item" href="/admin_schedule">View All</a></li>
                             <% } else { %>
-                                <li><a class="dropdown-item" href="/petDetails">Pet Hotel Booking(s)</a></li>
+                                <li><a class="dropdown-item" href="/petHotel">Pet Hotel Booking(s)</a></li>
                                 <li><a class="dropdown-item" href="/appointments">Vet Appointment(s)</a></li>
                                 <li><a class="dropdown-item" href="/user_schedule">View All</a></li>
                             <% } %>
