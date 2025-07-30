@@ -1,73 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-  <title>Pet Food</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Pet Food</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
   <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Pet Council</a>
+      <a class="navbar-brand" href="/petFoodList">Pet Products</a>
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="/pet-food/new">+ Add Pet Food</a>
+          <a class="nav-link" href="/addPetFood">+ Add New Food</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/petFoodList">Back to Food List</a>
         </li>
       </ul>
     </div>
   </nav>
 
   <div class="container mt-5">
-    <h2 class="text-center mb-4">Pet Food List</h2>
+    <h2 class="text-center mb-4">Update Pet Food</h2>
 
-    <table class="table table-bordered table-hover text-center">
-      <thead class="table-dark">
-        <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Brand</th>
-          <th>Description</th>
-          <th>Price ($)</th>
-          <th>Image</th>
-          <th>Actions</th> <!-- Added Actions column -->
-        </tr>
-      </thead>
-      <tbody>
-        <% if (petFoods.length > 0) { %>
-          <% petFoods.forEach(food => { %>
-            <tr>
-              <td><%= food.name %></td>
-              <td><%= food.category %></td>
-              <td><%= food.brand %></td>
-              <td><%= food.ingredients %></td>
-              <td><%= food.price.toFixed(2) %></td>
-              <td>
-                <% if (food.image) { %>
-                  <img src="/images/<%= food.image %>" alt="Pet Food Image" style="max-width: 80px;">
-                <% } else { %>
-                  No image
-                <% } %>
-              </td>
-              <td>
-                <a href="/editPetFood/<%= food.id %>" class="btn btn-sm btn-primary">Edit</a>
-                <form action="/deletePetFood/<%= food.id %>" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
-                </form>
-              </td>
-            </tr>
-          <% }) %>
-        <% } else { %>
-          <tr>
-            <td colspan="7">No pet food items found.</td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <% if (food) { %>
+      <form action="/editPetFood/<%= food.id %>" method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
+        <div class="mb-3">
+          <label for="name" class="form-label">Food Name</label>
+          <input type="text" id="name" name="name" class="form-control" value="<%= food.name %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="category" class="form-label">Category</label>
+          <input type="text" id="category" name="category" class="form-control" value="<%= food.category %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="brand" class="form-label">Brand</label>
+          <input type="text" id="brand" name="brand" class="form-control" value="<%= food.brand %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="ingredients" class="form-label">Ingredients</label>
+          <textarea id="ingredients" name="ingredients" class="form-control" rows="3" required><%= food.ingredients %></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="price" class="form-label">Price ($)</label>
+          <input type="number" class="form-control" id="price" name="price" step="0.01" min="0" value="<%= food.price %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="quantity" class="form-label">Quantity</label>
+          <input type="number" id="quantity" name="quantity" class="form-control" min="0" value="<%= food.quantity %>" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Current Image</label>
+          <input type="text" name="currentImage" class="form-control" value="<%= food.image %>" readonly>
+          <% if (food.image) { %>
+            <div class="mt-2">
+              <img src="/images/<%= food.image %>" class="img-thumbnail" style="max-width: 200px;">
+            </div>
+          <% } else { %>
+            <div class="mt-2 text-muted">No image available.</div>
+          <% } %>
+        </div>
+
+        <div class="mb-3">
+          <label for="image" class="form-label">New Image (optional)</label>
+          <input type="file" id="image" name="image" class="form-control" accept="image/*">
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Update Food</button>
+          <a href="/petFoodList" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+      </form>
+    <% } else { %>
+      <div class="alert alert-warning text-center">No food item found.</div>
+      <div class="text-center">
+        <a href="/petFoodList" class="btn btn-secondary">Back</a>
+      </div>
+    <% } %>
   </div>
-
 </body>
-
 </html>
