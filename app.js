@@ -703,6 +703,7 @@ app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => 
 });
 //Jeslyn part end
 
+// xinyue part end
 // Show list of Pet Foods
 app.get('/petFoodList', (req, res) => {
     const sql = "SELECT * FROM pet_products WHERE type = 'Food'";
