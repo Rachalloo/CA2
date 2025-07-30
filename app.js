@@ -114,7 +114,7 @@ app.post('/register', validateRegistration, (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-    res.render('login', {
+    res.render('login_R', {
         messages: req.flash('success'),
         errors: req.flash('error')
     });
