@@ -490,241 +490,201 @@ app.post('/medications/edit/:id', (req, res) => {
 //Syaleez part end
 
 //Jeslyn part start
-/******** PROGRAMME ********/
-// Define routes
-app.get('/programme', (req, res) => {
-    const sql = 'SELECT * FROM programme';
+// --- PROGRAMME ROUTES ---
 
-    // Fetch data from MySQL
-    db.query(sql, (error, results) => {
+// List all programmes
+app.get('/programme', (req, res) => {
+    db.query('SELECT * FROM programme', (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error Retrieving programme');
         }
-
-        // Render HTML page with data
-        res.render('programme_j', { programme: results});
+        res.render('programme_j', {
+            programmes: results,
+            user: req.session.user,
+        });
     });
 });
 
-
-// Retrieve and display one programme by id 
+// View a single programme 
 app.get('/programme/:id', (req, res) => {
     const programmeId = req.params.id;
-    const sql = 'SELECT * FROM programme WHERE programmeId = ?';
-    
-    db.query(sql, [programmeId], (error, results) => {
+    db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving programme by ID');
         }
-        
         if (results.length > 0) {
-            res.render('programme_j', { programme: results[0], user: req.session.user });
+            res.render('programme_j', {
+                programmes: [results[0]], 
+                user: req.session.user,
+            });
         } else {
             res.status(404).send('Programme not found');
         }
     });
 });
 
-app.get('/addProg', (req, res) => {
-    res.render('addProg_j');
+// Add Programme - GET
+app.get('/addProg', checkAuthenticated, checkAdmin, (req, res) => {
+    res.render('addProg_j', { user: req.session.user });
 });
 
-app.post('/addProg', upload.single('image'), (req, res) => {
+// Add Programme - POST
+app.post('/addProg', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
     const { name, description, startDate, endDate, location } = req.body;
-    let image;
-    if (req.file) {
-        image = req.file.filename;
-    } else {
-        image = null;
-    }
+    let image = req.file ? req.file.filename : null;
     const sql = "INSERT INTO programme (name, description, startDate, endDate, location, image) VALUES (?, ?, ?, ?, ?, ?)";
-    db.query(sql, [name, description, startDate, endDate, location, image], (error, results) => {
+    db.query(sql, [name, description, startDate, endDate, location, image], (error) => {
         if (error) {
             console.error("Error adding programme:", error);
-            res.status(500).send("Error adding programme");
-        } else {
-            if (req.session.user && req.session.user.role === 'admin') {
-                res.redirect('/programme');
-            } else {
-                res.redirect('/');
-            } 
+            return res.status(500).send("Error adding programme");
         }
+        res.redirect('/programme');
     });
 });
 
-app.get('/editProg/:id', (req, res) => {
+// Edit Programme - GET
+app.get('/editProg/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const programmeId = req.params.id;
-    const sql = 'SELECT * FROM programme WHERE programmeId = ?';
-    
-    db.query(sql, [programmeId], (error, results) => {
+    db.query('SELECT * FROM programme WHERE programmeId = ?', [programmeId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving programme by ID');
         }
-
         if (results.length > 0) {
-            res.render('editProg_j', { programme: results[0] });
+            res.render('editProg_j', { programme: results[0], user: req.session.user });
         } else {
             res.status(404).send('Programme not found');
         }
     });
 });
 
-app.post('/editProg/:id', upload.single('image'), (req, res) => {
+// Edit Programme - POST
+app.post('/editProg/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
     const programmeId = req.params.id;
     const { name, description, startDate, endDate, location } = req.body;
-
     let image = req.body.currentImage;
-    if (req.file) {
-        image = req.file.filename;
-    }
-
-    const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image=? WHERE programmeId = ?';
-
-    db.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error, results) => {
+    if (req.file) image = req.file.filename;
+    const sql = 'UPDATE programme SET name = ?, description = ?, startDate = ?, endDate = ?, location = ?, image = ? WHERE programmeId = ?';
+    db.query(sql, [name, description, startDate, endDate, location, image, programmeId], (error) => {
         if (error) {
-            console.error("Error adding programme:", error);
-            res.status(500).send('Error adding programme');
-        } else {
-            if (req.session.user && req.session.user.role === 'admin') {
-                res.redirect('/programme');
-            } else {
-                res.redirect('/');
-            }
+            console.error("Error updating programme:", error);
+            return res.status(500).send('Error updating programme');
         }
+        res.redirect('/programme');
     });
 });
 
-app.get('/deleteProg/:id', (req, res) => {
+// Delete Programme
+app.get('/deleteProg/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const programmeId = req.params.id;
-    const sql = 'DELETE FROM programme WHERE programmeId = ?';
-    
-    db.query(sql, [programmeId], (error, results) => {
+    db.query('DELETE FROM programme WHERE programmeId = ?', [programmeId], (error) => {
         if (error) {
             console.error("Error deleting programme:", error);
-            res.status(500).send('Error deleting programme');
-        } else {
-            res.redirect('/programme');
+            return res.status(500).send('Error deleting programme');
         }
+        res.redirect('/programme');
     });
 });
 
-/******** PARTNERSHIP ********/
+// --- PARTNERSHIP ROUTES ---
 
+// List all partnerships 
 app.get('/partnership', (req, res) => {
-    const sql = 'SELECT * FROM partnership';
-
-    db.query(sql, (error, results) => {
+    db.query('SELECT * FROM partnership', (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error Retrieving partnership');
         }
-
-        res.render('index_j', { partnership: results });
+        res.render('partnership_j', {
+            partnerships: results,
+            user: req.session.user,
+        });
     });
 });
 
+// View a single partnership 
 app.get('/partnership/:id', (req, res) => {
     const partnershipId = req.params.id;
-    const sql = 'SELECT * FROM partnership WHERE partnershipId = ?';
-
-    db.query(sql, [partnershipId], (error, results) => {
+    db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving partnership by ID');
         }
-
         if (results.length > 0) {
-            res.render('partnership_j', { partnership: results[0] });
+            res.render('partnership_j', {
+                partnerships: [results[0]],
+                user: req.session.user,
+            });
         } else {
             res.status(404).send('Partnership not found');
         }
     });
 });
 
-app.get('/addPartnership', (req, res) => {
-    res.render('addPartnership_j');
+// Add Partnership - GET
+app.get('/addPartnership', checkAuthenticated, checkAdmin, (req, res) => {
+    res.render('addPartnership_j', { user: req.session.user });
 });
 
-app.post('/addPartnership', upload.single('image'), (req, res) => {
+// Add Partnership - POST
+app.post('/addPartnership', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
     const { name, contact, email } = req.body;
     let image = req.file ? req.file.filename : null;
-
     const sql = "INSERT INTO partnership (name, contact, email, image) VALUES (?, ?, ?, ?)";
-
-    db.query(sql, [name, contact, email, image], (error, results) => {
+    db.query(sql, [name, contact, email, image], (error) => {
         if (error) {
             console.error("Error adding partnership:", error);
-            res.status(500).send("Error adding partnership");
-        } else {
-            if (req.session.user && req.session.user.role === 'admin') {
-                res.redirect('/partnership');  
-            } else {
-                res.redirect('/');
-            }
+            return res.status(500).send("Error adding partnership");
         }
+        res.redirect('/partnership');
     });
 });
 
-app.get('/editPartnership/:id', (req, res) => {
+// Edit Partnership - GET
+app.get('/editPartnership/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const partnershipId = req.params.id;
-    const sql = 'SELECT * FROM partnership WHERE partnershipId = ?';
-
-    db.query(sql, [partnershipId], (error, results) => {
+    db.query('SELECT * FROM partnership WHERE partnershipId = ?', [partnershipId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error retrieving partnership by ID');
         }
-
         if (results.length > 0) {
-            res.render('editPartnership_j', { partnership: results[0] });
+            res.render('editPartnership_j', { partnership: results[0], user: req.session.user });
         } else {
             res.status(404).send('Partnership not found');
         }
     });
 });
 
-app.post('/editPartnership/:id', upload.single('image'), (req, res) => {
+// Edit Partnership - POST
+app.post('/editPartnership/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
     const partnershipId = req.params.id;
     const { name, contact, email } = req.body;
-
     let image = req.body.currentImage;
-    if (req.file) {
-        image = req.file.filename;
-    }
-
+    if (req.file) image = req.file.filename;
     const sql = 'UPDATE partnership SET name = ?, contact = ?, email = ?, image = ? WHERE partnershipId = ?';
-
-    db.query(sql, [name, contact, email, image, partnershipId], (error, results) => {
+    db.query(sql, [name, contact, email, image, partnershipId], (error) => {
         if (error) {
             console.error("Error updating partnership:", error);
-            res.status(500).send('Error updating partnership');
-        } else {
-            if (req.session.user && req.session.user.role === 'admin') {
-                res.redirect('/partnership');
-            } else {
-                res.redirect('/');
-            }
+            return res.status(500).send('Error updating partnership');
         }
+        res.redirect('/partnership');
     });
 });
 
-app.get('/deletePartnership/:id', (req, res) => {
+// Delete Partnership
+app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const partnershipId = req.params.id;
-    const sql = 'DELETE FROM partnership WHERE partnershipId = ?';
-
-    db.query(sql, [partnershipId], (error, results) => {
+    db.query('DELETE FROM partnership WHERE partnershipId = ?', [partnershipId], (error) => {
         if (error) {
             console.error("Error deleting partnership:", error);
-            res.status(500).send('Error deleting partnership');
-        } else {
-            res.redirect('/partnership');
+            return res.status(500).send('Error deleting partnership');
         }
+        res.redirect('/partnership');
     });
 });
-
 //Jeslyn part end
 
 //Xinyue part start
