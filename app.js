@@ -913,13 +913,14 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
     db.query(vetQuery, [userId], (err2, vetResults) => {
       if (err2) {
         console.error("Error fetching vet appointments:", err2);
-        return res.status(500).send("Error fetching vet data.")
+        return res.status(500).send("Error fetching vet data.");
+      }
 
     db.query(pet_hotelQuery, [userId], (err3, groomingResults) => {
-    if (err3) {
-      console.error("Error fetching pet hotel appointments:", err3);
-      return res.status(500).send("Error fetching pet hotel data.");
-    }
+        if (err3) {
+          console.error("Error fetching pet hotel appointments:", err3);
+          return res.status(500).send("Error fetching pet hotel data.");
+      }
 
         const allAppointments = [...groomingResults, ...vetResults, ...pet_hotelResults];
         allAppointments.sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
@@ -927,10 +928,12 @@ app.get('/user_schedule', checkAuthenticated, (req, res) => {
         res.render('userSchedule_E', {
           appointments: allAppointments,
           user: req.session.user
-        });
-      }
+         });
+      });
     });
   });
+});
+
 
 app.post('/user_schedule/:id', checkAuthenticated, (req, res) => {
   const appointmentId = parseInt(req.params.id);
