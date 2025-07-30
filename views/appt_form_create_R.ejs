@@ -10,90 +10,84 @@
 </head>
 
 <body>
+  <div class="mb-3">
+    <label for="appointment">Appointment Type</label>
+    <input type="text" name="appointment" id="appointment" class="form-control" value="Grooming Appointment" readonly />
+  </div>
 
-  <div class="container mt-5">
-    <h1 class="text-center">Pet Appointment Form</h1>
-    <form action="/appt_form_create" method="POST" class="mt-4">
-      <div class="mb-3">
-        <label for="appointment">Appointment Type</label>
-        <input type="text" name="appointment" id="appointment" class="form-control"
-          placeholder="e.g. Grooming Appointment" required />
-      </div>
+  <div class="mb-3">
+    <label>Name</label>
+    <input type="text" name="name" class="form-control" required />
+  </div>
 
-      <br><br>
-      <div class="mb-3">
-        <label>Name</label>
-        <input type="text" name="name" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Contact Number</label>
+    <input type="tel" name="contact" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Contact Number</label>
-        <input type="tel" name="contact" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Email</label>
+    <input type="email" name="email" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Email</label>
-        <input type="email" name="email" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Preferred Date of Appointment</label>
+    <input type="date" name="date" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Preferred Date of Appointment</label>
-        <input type="date" name="date" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Preferred Time Slot</label>
+    <input type="text" name="time" class="form-control" placeholder="e.g. 10am - 12pm" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Preferred Time Slot</label>
-        <input type="text" name="time" class="form-control" placeholder="e.g. 10am - 12pm" required />
-      </div>
+  <div class="mb-3">
+    <label>First Time Customer?</label>
+    <select name="firstTime" class="form-control" required>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </div>
 
-      <div class="mb-3">
-        <label>First Time Customer?</label>
-        <select name="firstTime" class="form-control" required>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-      </div>
+  <div class="mb-3">
+    <label>Vet Name</label>
+    <input type="text" name="vet_name" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Vet Name</label>
-        <input type="text" name="vet_name" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Pet Name</label>
+    <input type="text" name="pet_name" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Pet Name</label>
-        <input type="text" name="pet_name" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Pet Breed</label>
+    <input type="text" name="petBreed" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Pet Breed</label>
-        <input type="text" name="petBreed" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Pet Age</label>
+    <input type="number" name="petAge" class="form-control" required />
+  </div>
 
-      <div class="mb-3">
-        <label>Pet Age</label>
-        <input type="number" name="petAge" class="form-control" required />
-      </div>
+  <div class="mb-3">
+    <label>Pet Health Condition (If Any)</label>
+    <textarea name="petHealth" class="form-control"></textarea>
+  </div>
 
-      <div class="mb-3">
-        <label>Pet Health Condition (If Any)</label>
-        <textarea name="petHealth" class="form-control"></textarea>
-      </div>
+  <div class="mb-3">
+    <label>Description</label>
+    <textarea name="description" class="form-control" required></textarea>
+  </div>
 
-      <div class="mb-3">
-        <label>Description</label>
-        <textarea name="description" class="form-control" required></textarea>
-      </div>
+  <div class="form-check mb-4">
+    <input class="form-check-input" type="checkbox" required>
+    <label class="form-check-label">
+      <a href="#">Privacy Policy</a>
+      <p>I have read and agree to the Pet Council Privacy Policy</p>
+    </label>
+  </div>
 
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" required>
-        <label class="form-check-label">
-          <a href="#">Privacy Policy</a>
-          <p>I have read and agree to the Pet Council Privacy Policy</p>
-        </label>
-      </div>
-
-      <a href="/submit_success" type="submit" class="btn btn-success">Submit Appointment</button>
-        <button type="reset" class="btn btn-secondary ms-2">Clear</button>
+  <a href="/submit_success" type="submit" class="btn btn-success">Submit Appointment</button>
+    <button type="reset" class="btn btn-secondary ms-2">Clear</button>
     </form>
 
     <!-- Decorative pet picture -->
@@ -105,8 +99,8 @@
     <div>
       <a href="/Home" class="btn btn-primary mt-3">Back to Home</a>
     </div>
-  </div>
-  <%- include('footer_R') %>
+    </div>
+    <%- include('footer_R') %>
 </body>
 
 </html>
