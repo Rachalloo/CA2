@@ -178,8 +178,14 @@ app.post('/appt_form_create', (req, res) => {
     res.render('appt_form_create_SRD');
 });
 
-app.get('/Success', (req, res) => {
-    res.render('submit_success_SRD');
+app.post('/appt_form_create', (req, res) => {
+  const formData = req.body;
+
+  res.redirect('/submit_success');
+});
+
+app.get('/submit_success', (req, res) => {
+  res.render('submit_success_SRD');
 });
 
 // Shopping cart routes
