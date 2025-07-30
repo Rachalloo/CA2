@@ -8,11 +8,16 @@
     <div class="container mt-5">
         <h1>Edit Appointment</h1>
 
-        <form action="/appointments/edit/<%= appointment.id %>" method="POST" class="mt-4">
+        <form action="/appointments/edit/<%= appointment.appointmentId %>" method="POST" class="mt-4">
 
             <div class="form-group">
                 <label for="vet_name">Vet Name:</label>
                 <input type="text" id="vet_name" name="vet_name" class="form-control" value="<%= appointment.vet_name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pet_name">Pet Name:</label>
+                <input type="text" id="pet_name" name="pet_name" class="form-control" value="<%= appointment.pet_name %>" required>
             </div>
 
             <div class="form-group">
