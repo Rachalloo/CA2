@@ -499,7 +499,7 @@ app.post('/medications/add', (req, res) => {
 
 // UPDATE: Edit form
 app.get('/medications/edit/:id', (req, res) => {
-    db.query('SELECT * FROM medications WHERE id = ?', [req.params.id], (err, results) => {
+    db.query('SELECT * FROM medications WHERE medication_id = ?', [req.params.id], (err, results) => {
         if (err) throw err;
         res.render('med_edit_S', { medication: results[0] });
     });
@@ -508,7 +508,7 @@ app.get('/medications/edit/:id', (req, res) => {
 // UPDATE: Edit form submission
 app.post('/medications/edit/:id', (req, res) => {
     const { medication_name, medication_dosage, medication_instructions, medication_licensed } = req.body;
-    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE id = ?';
+    const sql = 'UPDATE medications SET medication_name = ?, medication_dosage = ?, medication_instructions = ?, medication_licensed = ? WHERE medication_id = ?';
     db.query(sql, [medication_name, medication_dosage, medication_instructions, medication_licensed, req.params.id], (err) => {
         if (err) throw err;
         req.flash('success', 'Medication updated!');
