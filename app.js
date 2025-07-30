@@ -813,41 +813,40 @@ app.get('/petFoodList', (req, res) => {
   });
 });
 
-
 // Show form to add Pet Food
 app.get('/addPetFood', (req, res) => {
-    const sql = "SELECT * FROM pet_food";
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error("Error fetching pet foods:", err);
-            return res.status(500).send("Error retrieving food list.");
-        }
-        res.render('addFood_x', {
-            petFoods: results,
-            user: req.session.user
-        });
+  const sql = "SELECT * FROM pet_food";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fetching pet foods:", err);
+      return res.status(500).send("Error retrieving food list.");
+    }
+    res.render('addFood_x', {
+      petFoods: results,
+      user: req.session.user,
     });
+  });
 });
 
-// Handle adding Pet Food
-app.post('/addPetFood', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
+// Handle adding Pet Food 
+app.post('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
   const { food_name, food_category, food_brand, food_description, food_price, food_quantity } = req.body;
-  const image = req.file ? req.file.filename : null;
+
   const sql = `
     INSERT INTO pet_food
-    (food_name, food_category, food_brand, food_description, food_price, food_quantity, image)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    (food_name, food_category, food_brand, food_description, food_price, food_quantity)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
-  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image], (err) => {
-  if (err) {
-    console.error('Error adding pet food:', err);  
-    return res.status(500).send('Error adding pet food: ' + err.message);
-  }
-  res.redirect('/petFoodList');
-});
+  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity], (err) => {
+    if (err) {
+      console.error('Error adding pet food:', err);
+      return res.status(500).send('Error adding pet food: ' + err.message);
+    }
+    res.redirect('/petFoodList');
+  });
 });
 
-// Show form to edit Pet Food
+// Show form to edit Pet Food 
 app.get('/editPetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const id = req.params.id;
   db.query("SELECT * FROM pet_food WHERE id = ?", [id], (err, results) => {
@@ -863,17 +862,17 @@ app.get('/editPetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   });
 });
 
-// Handle editing Pet Food
-app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
+// Handle editing Pet Food (no image)
+app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const id = req.params.id;
-  const { food_name, food_category, food_brand, food_description, food_price, food_quantity, currentImage } = req.body;
-  const image = req.file ? req.file.filename : currentImage;
+  const { food_name, food_category, food_brand, food_description, food_price, food_quantity } = req.body;
+
   const sql = `
     UPDATE pet_food
-    SET food_name = ?, food_category = ?, food_brand = ?, food_description = ?, food_price = ?, food_quantity = ?, image = ?
+    SET food_name = ?, food_category = ?, food_brand = ?, food_description = ?, food_price = ?, food_quantity = ?
     WHERE id = ?
   `;
-  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image, id], (err) => {
+  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, id], (err) => {
     if (err) {
       console.error('Error updating pet food:', err.message);
       return res.status(500).send('Error updating pet food');
@@ -882,7 +881,7 @@ app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, upload.single('imag
   });
 });
 
-// Delete Pet Food - GET (with admin middleware)
+// Delete Pet Food
 app.get('/deletePetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM pet_food WHERE id = ?", [id], (err) => {
@@ -893,6 +892,7 @@ app.get('/deletePetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
     res.redirect('/petFoodList');
   });
 });
+
 // Xinyue Part End
 
 // En Hui's Part.
