@@ -710,109 +710,100 @@ app.get('/deletePartnership/:id', checkAuthenticated, checkAdmin, (req, res) => 
 //Jeslyn part end
 
 // xinyue part end
-// Show list of Pet Foods
+// List all Pet Food items
 app.get('/petFoodList', (req, res) => {
-    const sql = "SELECT * FROM pet_products WHERE type = 'Food'";
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Database query error:', err.message);
-            return res.status(500).send('Error retrieving pet food list');
-        }
-        res.render('foodList_x', {
-            petFoods: results,
-            user: req.session.user,
-        });
+  const sql = "SELECT * FROM pet_products";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err.message);
+      return res.status(500).send('Error retrieving pet food list');
+    }
+    res.render('foodList_x', {
+      petFoods: results,
+      user: req.session.user,
     });
+  });
 });
 
-// View a single Pet Food by ID
+// OPTIONAL: View a single pet food item by id
 app.get('/petFood/:id', (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM pet_products WHERE id = ? AND type = 'Food'";
-    db.query(sql, [id], (err, results) => {
-        if (err) {
-            console.error('Database query error:', err.message);
-            return res.status(500).send('Error retrieving pet food by ID');
-        }
-        if (results.length > 0) {
-            res.render('foodList_x', { 
-                petFoods: [results[0]], 
-                user: req.session.user,
-            });
-        } else {
-            res.status(404).send('Pet food not found');
-        }
-    });
+  const id = req.params.id;
+  db.query("SELECT * FROM pet_products WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err.message);
+      return res.status(500).send('Error retrieving pet food by ID');
+    }
+    if (results.length > 0) {
+      res.render('foodList_x', { petFoods: [results[0]], user: req.session.user });
+    } else {
+      res.status(404).send('Pet food not found');
+    }
+  });
 });
 
-// Show form to add Pet Food - with access control middleware
+// Show form to add Pet Food
 app.get('/addPetFood', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addFood_x', { user: req.session.user });
+  res.render('addFood_x', { user: req.session.user });
 });
 
 // Handle adding Pet Food
 app.post('/addPetFood', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const { name, category, brand, ingredients, price, quantity } = req.body;
-    const image = req.file ? req.file.filename : null;
-    const sql = `INSERT INTO pet_products (name, category, brand, ingredients, price, quantity, image, type)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, 'Food')`;
-    db.query(sql, [name, category, brand, ingredients, price, quantity, image], (err) => {
-        if (err) {
-            console.error('Error adding pet food:', err.message);
-            return res.status(500).send('Error adding pet food');
-        }
-        res.redirect('/petFoodList');
-    });
+  const { food_name, food_category, food_brand, food_description, food_price, food_quantity } = req.body;
+  const image = req.file ? req.file.filename : null;
+  const sql = `INSERT INTO pet_products 
+              (food_name, food_category, food_brand, food_description, food_price, food_quantity, image)
+              VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image], (err) => {
+    if (err) {
+      console.error('Error adding pet food:', err.message);
+      return res.status(500).send('Error adding pet food');
+    }
+    res.redirect('/petFoodList');
+  });
 });
 
 // Show form to edit Pet Food
 app.get('/editPetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM pet_products WHERE id = ? AND type = 'Food'";
-    db.query(sql, [id], (err, results) => {
-        if (err) {
-            console.error('Database query error:', err.message);
-            return res.status(500).send('Error retrieving pet food by id');
-        }
-        if (results.length > 0) {
-            res.render('editFood_x', { food: results[0], user: req.session.user });
-        } else {
-            res.status(404).send('Pet food not found');
-        }
-    });
+  const id = req.params.id;
+  db.query("SELECT * FROM pet_products WHERE id = ?", [id], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err.message);
+      return res.status(500).send('Error retrieving pet food by id');
+    }
+    if (results.length > 0) {
+      res.render('editFood_x', { food: results[0], user: req.session.user });
+    } else {
+      res.status(404).send('Pet food not found');
+    }
+  });
 });
 
-// Handle updating Pet Food
+// Handle editing Pet Food
 app.post('/editPetFood/:id', checkAuthenticated, checkAdmin, upload.single('image'), (req, res) => {
-    const id = req.params.id;
-    const { name, category, brand, ingredients, price, quantity, currentImage } = req.body;
-    const image = req.file ? req.file.filename : currentImage;
-    const sql = `UPDATE pet_products 
-                 SET name = ?, category = ?, brand = ?, ingredients = ?, price = ?, quantity = ?, image = ?
-                 WHERE id = ? AND type = 'Food'`;
-    db.query(sql, [name, category, brand, ingredients, price, quantity, image, id], (err) => {
-        if (err) {
-            console.error('Error updating pet food:', err.message);
-            return res.status(500).send('Error updating pet food');
-        }
-        res.redirect('/petFoodList');
-    });
+  const id = req.params.id;
+  const { food_name, food_category, food_brand, food_description, food_price, food_quantity, currentImage } = req.body;
+  const image = req.file ? req.file.filename : currentImage;
+  const sql = `UPDATE pet_products SET food_name = ?, food_category = ?, food_brand = ?, food_description = ?, food_price = ?, food_quantity = ?, image = ? WHERE id = ?`;
+  db.query(sql, [food_name, food_category, food_brand, food_description, food_price, food_quantity, image, id], (err) => {
+    if (err) {
+      console.error('Error updating pet food:', err.message);
+      return res.status(500).send('Error updating pet food');
+    }
+    res.redirect('/petFoodList');
+  });
 });
 
-// Delete Pet Food - GET (like Jeslyn's - for simplicity)
+// Delete Pet Food - GET (with middleware)
 app.get('/deletePetFood/:id', checkAuthenticated, checkAdmin, (req, res) => {
-    const id = req.params.id;
-    const sql = "DELETE FROM pet_products WHERE id = ? AND type = 'Food'";
-    db.query(sql, [id], (err) => {
-        if (err) {
-            console.error('Error deleting pet food:', err.message);
-            return res.status(500).send('Error deleting pet food');
-        }
-        res.redirect('/petFoodList');
-    });
+  const id = req.params.id;
+  db.query("DELETE FROM pet_products WHERE id = ?", [id], (err) => {
+    if (err) {
+      console.error('Error deleting pet food:', err.message);
+      return res.status(500).send('Error deleting pet food');
+    }
+    res.redirect('/petFoodList');
+  });
 });
-
-
 // Xinyue Part End
 
 // En Hui's Part.
