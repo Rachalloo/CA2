@@ -186,7 +186,7 @@ app.post('/appt_form_create', (req, res) => {
     date,
     time,
     firstTime,
-    pet_name,
+    petName,
     petBreed,
     petAge,
     petHealth,
@@ -196,7 +196,7 @@ app.post('/appt_form_create', (req, res) => {
   const groomingId = Date.now(); // simple unique ID
 
   const sql = `INSERT INTO grooming 
-    (groomingId, appointmentType, name, contact, email, preferredDate, preferredTime, firsttimeCustomer, petName, petBreed, petAge, healthCondition, description)
+    (groomingId, appointment, name, contact, email, date, time, firstTime, petName, petBreed, petAge, petHealth, description)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
@@ -208,7 +208,7 @@ app.post('/appt_form_create', (req, res) => {
     date,
     time,
     firstTime,
-    pet_name,
+    petName,
     petBreed,
     petAge,
     petHealth,
