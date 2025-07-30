@@ -792,7 +792,7 @@ app.get('/petFoodList', (req, res) => {
 
 // En Hui's Part.
 //USER
-app.get('/user/schedule', checkAuthenticated, (req, res) => {
+app.get('/user_schedule', checkAuthenticated, (req, res) => {
     connection.query(
         'SELECT * FROM appointments WHERE user_id = ?', [req.session.user.id],
         (error, results) => {
@@ -802,7 +802,7 @@ app.get('/user/schedule', checkAuthenticated, (req, res) => {
     );
 });
 
-app.post('/user/schedule/:id', checkAuthenticated, (req, res) => {
+app.post('/user_schedule/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
 
     connection.query('SELECT * FROM request_appointments WHERE appointmentId = ?', [appointmentId], (error, results) => {
@@ -823,14 +823,14 @@ app.post('/user/schedule/:id', checkAuthenticated, (req, res) => {
                 });
             }
 
-            res.redirect('/user/schedule');
+            res.redirect('/user_schedule');
         } else {
             res.status(404).send("Schedule item not found");
         }
     });
 });
 
-app.get('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
+app.get('/user_schedule_reschedule_request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = req.params.id;
     const userId = req.session.user.id;
 
@@ -846,7 +846,7 @@ app.get('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) 
     );
 });
 
-app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res) => {
+app.post('/user_schedule_reschedule-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
     const { DeleteReq, appointmentDate } = req.body;
 
@@ -855,12 +855,12 @@ app.post('/user/schedule/reschedule-request/:id', checkAuthenticated, (req, res)
         [DeleteReq, appointmentDate, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
-            res.redirect('/user/schedule');
+            res.redirect('/user_schedule');
         }
     );
 });
 
-app.post('/user/schedule/schedule-delete-request/:id', checkAuthenticated, (req, res) => {
+app.post('/user_schedule_schedule-delete-request/:id', checkAuthenticated, (req, res) => {
     const appointmentId = parseInt(req.params.id);
     const { ReschId, appointmentDate } = req.body;
 
@@ -869,23 +869,23 @@ app.post('/user/schedule/schedule-delete-request/:id', checkAuthenticated, (req,
         [ReschId, appointmentDate, appointmentId, req.session.user.id],
         (err) => {
             if (err) return res.sendStatus(500);
-            res.redirect('/user/schedule');
+            res.redirect('/user_schedule');
         }
     );
 });
 
 //ADMIN 
-app.get('/admin/schedule', checkAuthenticated, checkAdmin, (req, res) => {
+app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
     connection.query(
         'SELECT * FROM appointments',
         (error, results) => {
             if (error) return res.sendStatus(500);
-            res.render('adminSchedule', { requests: results });
-        }
+            res.render('adminSchedule_E', { requests: results });
+        }  
     );
 });
 
-app.post('/admin/schedule/review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
+app.post('/admin_schedule_review-reschedule/:id', checkAuthenticated, checkAdmin, (req, res) => {
     const appointmentId = parseInt(req.params.id);
 
     connection.query(
@@ -905,7 +905,7 @@ app.post('/admin/schedule/review-reschedule/:id', checkAuthenticated, checkAdmin
                         console.error("Error Rescheduling:", err);
                         res.status(500).send('Error Rescheduling');
                     } else {
-                        res.redirect('/admin/schedule');
+                        res.redirect('/admin_schedule');
                     }
                 }
             );
@@ -913,7 +913,7 @@ app.post('/admin/schedule/review-reschedule/:id', checkAuthenticated, checkAdmin
     );
 });
 
-app.get('/admin/schedule/deleteSchedule/:id', (req, res) => {
+app.get('/admin_schedule_deleteSchedule/:id', (req, res) => {
     const appointmentId = parseInt(req.params.id);
 
     connection.query('DELETE FROM appointments WHERE appointment_id = ?', [appointmentId], (error, results) => {
@@ -923,7 +923,7 @@ app.get('/admin/schedule/deleteSchedule/:id', (req, res) => {
             res.status(500).send('Error deleting schedule');
         } else {
             // Send a success response
-            res.redirect('/admin/schedule');
+            res.redirect('/admin_schedule');
         }
     });
 });
