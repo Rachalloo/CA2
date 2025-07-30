@@ -314,8 +314,6 @@ app.post('/checkout', checkAuthenticated, (req, res) => {
     });
   });
 });
-
-
 // Rachel's part end
 
 //doris part start
@@ -978,6 +976,9 @@ app.get('/admin_schedule', checkAuthenticated, checkAdmin, (req, res) => {
            appointment_date AS appointmentDate, NULL AS time, pet_name AS petName, 
            NULL AS petBreed 
     FROM appointments`;
+
+  const petHotelQuery = `
+  SELECT id AS id, 'Pet Hotel' AS type, `
 
   db.query(groomingQuery, (err, groomingResults) => {
     if (err) {
